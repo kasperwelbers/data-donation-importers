@@ -5,7 +5,10 @@ import File from "../utilities/File.js";
 
 const baseStyle = {
   alignItems: "center",
+  textAlign: "center",
   padding: "20px",
+  fontSize: "15px",
+  textShadow: "0px 0px 10px #12263bf7",
   borderWidth: 3,
   borderRadius: "20px",
   borderColor: "black",
@@ -17,17 +20,11 @@ const baseStyle = {
   transition: "border .24s ease-in-out",
 };
 
-const focusedStyle = {
-  borderColor: "white",
-};
+const focusedStyle = {};
 
-const acceptStyle = {
-  borderColor: "green",
-};
+const acceptStyle = {};
 
-const rejectStyle = {
-  borderColor: "red",
-};
+const rejectStyle = {};
 
 /**
  *
@@ -39,14 +36,8 @@ const rejectStyle = {
  * @returns
  */
 export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
-  const {
-    getRootProps,
-    getInputProps,
-    acceptedFiles,
-    isFocused,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone(createValidator(allowedFiles));
+  const { getRootProps, getInputProps, acceptedFiles, isFocused, isDragAccept, isDragReject } =
+    useDropzone(createValidator(allowedFiles));
 
   const style = useMemo(
     () => ({
@@ -65,17 +56,12 @@ export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
   return (
     <div {...getRootProps({ style })}>
       <input {...getInputProps()} />
-      <p>Drag a file or folder over here, or click to select a file</p>
+      <p>Drag a file or folder into this area, or click here to select a file</p>
     </div>
   );
 }
 
-const listFiles = async (
-  acceptedFiles,
-  setAcceptedFiles,
-  allowedFiles,
-  devmode
-) => {
+const listFiles = async (acceptedFiles, setAcceptedFiles, allowedFiles, devmode) => {
   const files = [];
   for (let af of acceptedFiles) {
     if (/\.zip$/.test(af.name.toLowerCase())) {
