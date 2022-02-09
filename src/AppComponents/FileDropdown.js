@@ -36,7 +36,7 @@ const FileDropdown = ({ acceptedFiles, selected, setSelected }) => {
       <div style={{ flex: "1 1 auto", paddingLeft: "10px", paddingTop: "8px" }}>
         <h4>
           Recipe matched {acceptedFiles.length} file
-          {acceptedFiles.length > 1 ? "s" : ""}
+          {acceptedFiles.length !== 1 ? "s" : ""}
         </h4>
       </div>
     </div>

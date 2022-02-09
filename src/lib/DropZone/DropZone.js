@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import JSZip from "jszip";
-import File from "../utilities/File.js";
+import File from "./File.js";
 
 const baseStyle = {
   alignItems: "center",
@@ -50,6 +50,7 @@ export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
   );
 
   useEffect(() => {
+    console.log(allowedFiles);
     listFiles(acceptedFiles, setAcceptedFiles, allowedFiles, devmode);
   }, [acceptedFiles, setAcceptedFiles, allowedFiles, devmode]);
 
@@ -73,6 +74,7 @@ const listFiles = async (acceptedFiles, setAcceptedFiles, allowedFiles, devmode)
     }
   }
 
+  console.log(files);
   setAcceptedFiles(files);
 };
 
@@ -104,6 +106,7 @@ const createValidator = (allowedFiles, devmode) => {
 };
 
 const fileIsAllowed = (path, allowedFiles) => {
+  if (allowedFiles.length === 0) return true;
   for (let allowedFile of allowedFiles) {
     if (path.toLowerCase().includes(allowedFile.toLowerCase())) return true;
   }

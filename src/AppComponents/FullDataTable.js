@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon, Button } from "semantic-ui-react";
+import { Container, Pagination, Table, Icon } from "semantic-ui-react";
 
 const PAGESIZE = 5;
 
@@ -10,11 +10,11 @@ const PAGESIZE = 5;
 export default function FullDataTable({ fullData }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
-  const columns = fullData[0];
+  const [columns, setColumns] = useState(null);
 
   const pageChange = (activePage) => {
     const offset = (activePage - 1) * PAGESIZE;
-    const newdata = fullData.slice(offset + 1, offset + PAGESIZE + 1);
+    const newdata = fullData.slice(offset, offset + PAGESIZE);
     setData(newdata);
   };
 
@@ -23,14 +23,25 @@ export default function FullDataTable({ fullData }) {
       setData([]);
       return null;
     }
-    const n = fullData.length - 1;
+    setColumns(null);
+
+    const n = fullData.length;
     setPages(Math.ceil(n / PAGESIZE));
     let newdata = [];
-    if (n > 0) newdata = fullData.slice(1, PAGESIZE + 1);
+    if (n > 0) newdata = fullData.slice(0, PAGESIZE);
     setData(newdata);
+
+    // get all columns used in data, so that table shows them if missing in a batch
+    const columnMap = {};
+    for (let r of fullData) {
+      for (let column of Object.keys(r)) {
+        if (!columnMap[column]) columnMap[column] = true;
+      }
+    }
+    setColumns(Object.keys(columnMap));
   }, [fullData]);
 
-  if (!data) return;
+  if (!data || data.length === 0 || !columns || columns.length === 0) return null;
 
   return <PaginationTable data={data} pages={pages} columns={columns} pageChange={pageChange} />;
 }
@@ -60,7 +71,9 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
   };
 
   const createRowCells = (row) => {
-    let cells = row.map((value, i) => {
+    let cells = columns.map((column, i) => {
+      const isObject = typeof row[column] === "object";
+      const value = isObject ? JSON.stringify(row[column]) : row[column];
       return (
         <Table.Cell key={i}>
           <span title={value}>{value}</span>

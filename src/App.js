@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Grid, Segment } from "semantic-ui-react";
 import DropZone from "./lib/DropZone/DropZone";
-import RecipeTemplate from "./lib/RecipeTemplate/RecipeTemplate";
+import RecipeTemplate from "./AppComponents/RecipeTemplate";
 import DataViewer from "./AppComponents/DataViewer";
 import FileDropdown from "./AppComponents/FileDropdown";
 
 export default function App() {
   const [selected, setSelected] = useState(null);
   const [acceptedFiles, setAcceptedFiles] = useState([]);
-  const [recipe, setRecipe] = useState({ allowedFiles: [], parser: "json" });
+  const [recipe, setRecipe] = useState({});
 
   return (
     <Grid columns={2} style={{ margin: "10px" }}>
@@ -19,11 +19,7 @@ export default function App() {
       </Grid.Column>
       <Grid.Column width={12}>
         <Segment style={{ display: "flex", flexDirection: "column" }}>
-          <DropZone
-            allowedFiles={recipe.allowedFiles}
-            setAcceptedFiles={setAcceptedFiles}
-            devmode
-          />
+          <DropZone allowedFiles={recipe.files} setAcceptedFiles={setAcceptedFiles} devmode />
           <br />
           <FileDropdown
             acceptedFiles={acceptedFiles}
@@ -32,10 +28,7 @@ export default function App() {
           />
           <br />
 
-          <DataViewer
-            file={acceptedFiles.find((af) => af.path === selected)}
-            parser={recipe.parser}
-          />
+          <DataViewer file={acceptedFiles.find((af) => af.path === selected)} recipe={recipe} />
         </Segment>
       </Grid.Column>
     </Grid>
