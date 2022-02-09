@@ -1,12 +1,13 @@
 {
   "name": "data-donation-importers",
   "description": "React components for importing data donation formats",
-  "author": "Kasper Welbers & Wouter van Atteveldt",
+  "author": "Kasper Welbers",
   "keywords": [
     "react",
     "annotation"
   ],
   "version": "0.1.2",
+  "homepage": "https://kasperwelbers.github.io/data-donation-importers",
   "repository": {
     "type": "git",
     "url": "https://github.com/kasperwelbers/data-donation-importers"
