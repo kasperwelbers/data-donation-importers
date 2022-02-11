@@ -3,37 +3,25 @@ import { Container, Segment, Loader, Dimmer, Message, Header, Button } from "sem
 
 import ReactJson from "react-json-view";
 import { DOMInspector } from "react-inspector";
-import Papa from "papaparse";
 import FullDataTable from "./FullDataTable";
 import parserPipeline from "../lib/parsers/parserPipeline";
 
-const DataViewer = ({ file, recipe }) => {
-  const [content, setContent] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+const DataViewer = ({ content, recipe, loading }) => {
   const [showRaw, setShowRaw] = useState(false);
 
-  useEffect(() => {
-    if (!file) {
-      setContent(null);
-      setLoading(null);
-      setMessage("");
-      return;
-    }
-    prepareContent(file, recipe.parser.filetype, setContent, setLoading, setMessage);
-  }, [file, recipe.parser?.filetype]);
+  if (!recipe || !content?.content) return null;
 
   return (
     <Container style={{ overflow: "auto", flex: "1 1 auto", width: "100%" }}>
       <div style={{ display: "flex" }}>
-        {message ? <Message style={{ margin: "0" }}>{message}</Message> : null}
         <Button
           content={showRaw ? "Hide raw data" : "Show raw data"}
           primary
           onClick={() => setShowRaw(!showRaw)}
         />
+        {content.message ? <Message style={{ margin: "0" }}>{content.message}</Message> : null}
       </div>
-      <Dimmer active={loading}>
+      <Dimmer active={loading || false}>
         <Loader />
       </Dimmer>
 
@@ -50,7 +38,7 @@ const DataViewer = ({ file, recipe }) => {
 
 const RenderRaw = ({ content }) => {
   if (!content?.content) return null;
-  switch (content.parser) {
+  switch (content.filetype) {
     case "json":
       return (
         <>
@@ -97,29 +85,6 @@ const RenderProcessed = ({ content, recipe }) => {
       <FullDataTable fullData={processed} />
     </>
   );
-};
-
-const prepareContent = async (file, parser, setContent, setLoading, setMessage) => {
-  setLoading(true);
-
-  let content = null;
-  try {
-    const text = await file.read();
-    if (parser === "json") content = JSON.parse(text);
-    if (parser === "html") content = new DOMParser().parseFromString(text, "text/html");
-    if (parser === "csv") content = Papa.parse(text, { header: true }).data;
-  } catch (e) {
-    console.log(e);
-  }
-
-  if (content === null) {
-    setMessage(`Failed to parse file as ${parser}`);
-    setContent({ content, parser });
-  } else {
-    setMessage(`parsed file as ${parser}`);
-    setContent({ content, parser });
-  }
-  setLoading(false);
 };
 
 export default DataViewer;

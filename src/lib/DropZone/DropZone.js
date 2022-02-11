@@ -50,7 +50,6 @@ export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
   );
 
   useEffect(() => {
-    console.log(allowedFiles);
     listFiles(acceptedFiles, setAcceptedFiles, allowedFiles, devmode);
   }, [acceptedFiles, setAcceptedFiles, allowedFiles, devmode]);
 
@@ -74,7 +73,6 @@ const listFiles = async (acceptedFiles, setAcceptedFiles, allowedFiles, devmode)
     }
   }
 
-  console.log(files);
   setAcceptedFiles(files);
 };
 

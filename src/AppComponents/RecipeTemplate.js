@@ -1,36 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Form, Segment, TextArea, Dropdown, Input, Header } from "semantic-ui-react";
+import { Form, Segment, TextArea, Dropdown, Input, Header, Divider } from "semantic-ui-react";
 import RecipeSelector from "./RecipeSelector";
 import { recipes } from "../recipes.js";
+import CreateColumns from "./CreateColumns";
+import SelectorDropdown from "./SelectorDropdown";
 
-const RecipeTemplate = ({ recipe, setRecipe }) => {
-  const [name, setName] = useState("");
-  const [fileNames, setFileNames] = useState("");
-  const [fileType, setFileType] = useState("json");
+const new_recipe = {
+  name: "New recipe",
+  files: ["history"],
+  filetype: "json",
+  base_paths: ["Browser History"],
+  columns: [
+    { name: "URL", paths: ["url"] },
+    { name: "Title", paths: ["title"] },
+    { name: "transition", paths: ["page_transition"] },
+    { name: "client_id", paths: ["client_id"] },
+    { name: "Date", paths: ["time_usec"] },
+  ],
+};
 
-  const setRecipeName = (value) => {
-    setRecipe((recipe) => ({ ...recipe, name: value }));
-  };
+const RECIPES = { new_recipe, ...recipes };
 
-  const setParserSetting = (key, value) => {
-    setRecipe((recipe) => ({ ...recipe, parser: { ...recipe.parser, [key]: value } }));
-  };
+const RecipeTemplate = ({ recipe, setRecipe, content }) => {
+  const [hints, setHints] = useState(null);
 
   useEffect(() => {
-    setFileNames(recipe.files?.join("\n") || "");
-    setFileType(recipe.parser?.filetype);
-    setName(recipe.name || "");
-  }, [recipe]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      let fnames = fileNames.split("\n");
-      fnames = fnames.map((fname) => fname.trim());
-      if (fnames.length === 1 && fnames[0] === "") fnames = [];
-      setRecipe((recipe) => ({ ...recipe, files: fnames }));
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [fileNames, setRecipe]);
+    findHints(content, setHints);
+  }, [content]);
 
   return (
     <Segment>
@@ -39,41 +35,91 @@ const RecipeTemplate = ({ recipe, setRecipe }) => {
       <Form>
         <Form.Field>
           <label>Select Recipe</label>
-          <RecipeSelector recipes={recipes} setRecipe={setRecipe} />
+          <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
         </Form.Field>
-        <Form.Field>
-          <label>Name</label>
-          <Input
-            value={name}
-            placeholder={"Name of the recipe"}
-            onChange={(e, d) => setRecipeName(d.value)}
-          />
-        </Form.Field>
-        <Form.Field style={{ width: "100%" }}>
-          <label>File names</label>
-          <TextArea
-            placeholder="Type string to match filename. Use multiple rows for aliases"
-            value={fileNames}
-            onChange={(e, d) => setFileNames(d.value)}
-          />
-        </Form.Field>
-        <Form.Field>
-          <label>Parser</label>
-          <Dropdown
-            selection
-            value={fileType}
-            onChange={(e, d) => setParserSetting("filetype", d.value)}
-            options={["json", "html", "csv"].map((o) => ({
-              key: o,
-              value: o,
-              text: o,
-            }))}
-          />
-        </Form.Field>
-        <JsonForms recipe={recipe} setRecipe={setRecipe} />
-        <Transform recipe={recipe} setRecipe={setRecipe} />
+        <RecipeForms recipe={recipe} setRecipe={setRecipe} />
       </Form>
     </Segment>
+  );
+};
+
+const RecipeForms = ({ recipe, setRecipe }) => {
+  // all typed values are passed via delayedRecipe
+  const [delayedRecipe, setDelayedRecipe] = useState(recipe);
+
+  useEffect(() => {
+    setDelayedRecipe(recipe);
+  }, [recipe]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setRecipe(delayedRecipe);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [delayedRecipe, setRecipe]);
+
+  const setRecipeName = (e, d) => {
+    setDelayedRecipe((recipe) => ({ ...recipe, name: d.value }));
+  };
+
+  const setFileType = (e, d) => {
+    setRecipe((recipe) => ({ ...recipe, filetype: d.value }));
+  };
+
+  const setFiles = (files) => {
+    setRecipe((recipe) => ({ ...recipe, files }));
+  };
+
+  const setBasePaths = (base_paths) => {
+    setRecipe((recipe) => ({ ...recipe, base_paths }));
+  };
+
+  if (!delayedRecipe || !delayedRecipe.name || !delayedRecipe.filetype || !delayedRecipe.files)
+    return null;
+
+  return (
+    <>
+      <Form.Field>
+        <label>Name</label>
+        <Input
+          value={delayedRecipe.name}
+          placeholder={"Name of the recipe"}
+          onChange={setRecipeName}
+        />
+      </Form.Field>
+      <Form.Field style={{ width: "100%" }}>
+        <label>
+          File name <span style={{ color: "grey" }}>+ optional aliases</span>
+        </label>
+
+        <SelectorDropdown values={recipe.files} setValues={setFiles} />
+      </Form.Field>
+      <Form.Field>
+        <label>File type</label>
+        <Dropdown
+          selection
+          value={recipe.filetype}
+          onChange={setFileType}
+          options={["json", "html", "csv"].map((o) => ({
+            key: o,
+            value: o,
+            text: o,
+          }))}
+        />
+      </Form.Field>
+
+      <Divider />
+      <Header>Extracting columns</Header>
+      <Form.Field>
+        <label>
+          Base path <span style={{ color: "grey" }}>+ optional aliases</span>
+        </label>
+        <SelectorDropdown values={recipe.base_paths} setValues={setBasePaths} />
+      </Form.Field>
+      {/* <JsonForms recipe={recipe} setRecipe={setRecipe} />
+        <Transform recipe={recipe} setRecipe={setRecipe} /> */}
+      <CreateColumns recipe={recipe} setRecipe={setRecipe} />
+    </>
   );
 };
 
@@ -105,7 +151,7 @@ const JsonForms = ({ recipe, setRecipe }) => {
   return (
     <>
       <Form.Field>
-        <label>Key</label>
+        <label>Base path</label>
         <Input
           placeholder="key in JSON to look in"
           value={keyString}
@@ -113,9 +159,9 @@ const JsonForms = ({ recipe, setRecipe }) => {
         />
       </Form.Field>
       <Form.Field>
-        <label>Paths</label>
+        <label>Columns</label>
         <TextArea
-          placeholder="Paths to filter on"
+          placeholder={`Create columns by giving the column name followed by one or multiple paths for finding the column.\n\nname: ["path","alternative"]\ndate: ["date","datum"]`}
           value={pathsString}
           onChange={(e, d) => setPathsString(d.value)}
           style={{ height: "150px" }}
@@ -157,5 +203,18 @@ const Transform = ({ recipe, setRecipe }) => {
     </Form.Field>
   );
 };
+
+const findHints = (content, setHints) => {
+  switch (content.filetype) {
+    case "json":
+      setHints(findHintsJSON(content));
+    //case "html": setHints(findHintsJSON(content))
+    //case "csv": setHints(findHintsJSON(content))
+    default:
+      return null;
+  }
+};
+
+const findHintsJSON = (content) => {};
 
 export default RecipeTemplate;

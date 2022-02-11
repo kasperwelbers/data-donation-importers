@@ -1,9 +1,3 @@
-const new_recipe = {
-  name: "New recipe",
-  allowedFiles: [],
-  parser: { filetype: "json" },
-};
-
 const google_takeout_browsing_history = {
   name: "Google Takeout Browsing History",
   files: ["BrowserHistory.json"],
@@ -25,7 +19,6 @@ const google_takeout_youtube_history_json = {
 };
 
 export const recipes = {
-  new_recipe,
   google_takeout_youtube_history_json,
   google_takeout_browsing_history,
 };

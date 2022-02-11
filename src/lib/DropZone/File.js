@@ -1,3 +1,5 @@
+import Papa from "papaparse";
+
 export default class File {
   constructor(name, path, blob, zipped = null) {
     this.name = name;
@@ -27,5 +29,23 @@ export default class File {
       };
       reader.readAsText(this.blob);
     });
+  }
+
+  async parse(filetype) {
+    let content = null;
+    try {
+      const text = await this.read();
+      if (filetype === "json") content = JSON.parse(text);
+      if (filetype === "html") content = new DOMParser().parseFromString(text, "text/html");
+      if (filetype === "csv") content = Papa.parse(text, { header: true }).data;
+    } catch (e) {
+      console.log(e);
+    }
+
+    if (content === null) {
+      return { content, filetype, message: `Failed to parse file as ${filetype}` };
+    } else {
+      return { content, filetype, message: `parsed file as ${filetype}` };
+    }
   }
 }

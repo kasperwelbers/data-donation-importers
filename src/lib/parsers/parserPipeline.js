@@ -1,10 +1,36 @@
 import parseJSON from "./parseJSON";
 
 export default function parserPipeline(content, recipe) {
-  let data;
-  try {
-    if (content?.parser === "json") data = parseJSON(content.content, recipe);
+  let data = [];
+  if (!recipe?.columns) return [];
 
+  const paths = [];
+  const pathToName = {};
+  for (let column of recipe.columns) {
+    if (column.name === "" || column.paths.length === 0) continue;
+    for (let addPath of column.paths) {
+      if (!paths.includes(addPath)) paths.push(addPath);
+      if (!pathToName[addPath]) pathToName[addPath] = [];
+      pathToName[addPath].push(column.name);
+    }
+  }
+
+  try {
+    //let key = recipe.parser.key
+    //let paths = recipe.parser.paths.reduce((arr, column)).
+
+    const base_paths = recipe.base_paths.length === 0 ? [null] : recipe.base_paths;
+    for (let base_path of base_paths) {
+      let base_path_data;
+      if (recipe.filetype === "json") base_path_data = parseJSON(content.content, base_path, paths);
+      for (let rawrow of base_path_data) {
+        const row = {};
+        for (let path of Object.keys(rawrow)) {
+          for (let toColumn of pathToName[path]) row[toColumn] = rawrow[path];
+        }
+        data.push(row);
+      }
+    }
     data = applyTransformations(data, recipe);
   } catch (e) {
     console.log(e);
