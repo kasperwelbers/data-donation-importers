@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Segment, Loader, Dimmer, Message, Header } from "semantic-ui-react";
+import { Container, Segment, Loader, Dimmer, Message, Header, Button } from "semantic-ui-react";
 
 import ReactJson from "react-json-view";
 import { DOMInspector } from "react-inspector";
@@ -11,6 +11,7 @@ const DataViewer = ({ file, recipe }) => {
   const [content, setContent] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [showRaw, setShowRaw] = useState(false);
 
   useEffect(() => {
     if (!file) {
@@ -24,14 +25,23 @@ const DataViewer = ({ file, recipe }) => {
 
   return (
     <Container style={{ overflow: "auto", flex: "1 1 auto", width: "100%" }}>
-      {message ? <Message>{message}</Message> : null}
-
+      <div style={{ display: "flex" }}>
+        {message ? <Message style={{ margin: "0" }}>{message}</Message> : null}
+        <Button
+          content={showRaw ? "Hide raw data" : "Show raw data"}
+          primary
+          onClick={() => setShowRaw(!showRaw)}
+        />
+      </div>
       <Dimmer active={loading}>
         <Loader />
       </Dimmer>
-      <Segment style={{ height: "40vh", overflow: "auto" }}>
-        <RenderRaw content={content} />
-      </Segment>
+
+      {showRaw ? (
+        <Segment style={{ height: "40vh", overflow: "auto" }}>
+          <RenderRaw content={content} />
+        </Segment>
+      ) : null}
       <br />
       <RenderProcessed content={content} recipe={recipe} />
     </Container>
@@ -45,7 +55,13 @@ const RenderRaw = ({ content }) => {
       return (
         <>
           <Header textAlign="center">Raw JSON</Header>
-          <ReactJson name={null} collapseStringsAfterLength={30} src={content.content} />
+          <ReactJson
+            name={null}
+            displayArrayKeys={false}
+            enableClipboard={false}
+            collapseStringsAfterLength={30}
+            src={content.content}
+          />
         </>
       );
     case "html":

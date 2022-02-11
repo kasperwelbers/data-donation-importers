@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Pagination, Table, Icon } from "semantic-ui-react";
+import { Container, Pagination, Table, Icon, Checkbox } from "semantic-ui-react";
 
 const PAGESIZE = 5;
 
@@ -54,6 +54,8 @@ export default function FullDataTable({ fullData }) {
  * @returns
  */
 const PaginationTable = ({ data, columns, pages, pageChange }) => {
+  const [singleLine, setSingleLine] = useState(true);
+
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
       return (
@@ -89,10 +91,10 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
     <Container style={{ width: "100%" }}>
       <Table
         unstackable
-        selectable
         fixed
+        singleLine={singleLine}
+        selectable
         compact
-        singleLine
         size="small"
         style={{ fontSize: "10px" }}
       >
@@ -103,6 +105,12 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
         <Table.Footer>
           <Table.Row>
             <Table.HeaderCell colSpan={columns.length}>
+              <Checkbox
+                toggle
+                label={"Truncate"}
+                checked={singleLine}
+                onChange={(e, d) => setSingleLine(d.checked)}
+              />
               {pages > 1 ? (
                 <Pagination
                   size="mini"
