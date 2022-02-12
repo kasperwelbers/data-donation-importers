@@ -75,7 +75,7 @@ const RenderProcessed = ({ content, recipe }) => {
   const [processed, setProcessed] = useState(null);
 
   useEffect(() => {
-    setProcessed(parserPipeline(content, recipe));
+    setProcessed(parserPipeline(content, recipe, true));
   }, [content, recipe, setProcessed]);
 
   if (!processed) return null;

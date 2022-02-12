@@ -1,32 +1,47 @@
+import parseHTML from "./parseHTML";
 import parseJSON from "./parseJSON";
 
-export default function parserPipeline(content, recipe) {
+export default function parserPipeline(content, recipe, includeFull = false) {
   let data = [];
   if (!recipe?.columns) return [];
 
-  const paths = [];
-  const pathToName = {};
+  const column_selectors = [];
+  const column_names = {};
+  console.log(recipe);
   for (let column of recipe.columns) {
-    if (column.name === "" || column.paths.length === 0) continue;
-    for (let addPath of column.paths) {
-      if (!paths.includes(addPath)) paths.push(addPath);
-      if (!pathToName[addPath]) pathToName[addPath] = [];
-      pathToName[addPath].push(column.name);
+    const column_selector_array = Array.isArray(column.selector)
+      ? column.selector
+      : [column.selector];
+    if (column.name === "" || column_selector_array.length === 0) continue;
+    for (let addColumnSelector of column_selector_array) {
+      if (!column_selectors.includes(addColumnSelector)) column_selectors.push(addColumnSelector);
+      if (!column_names[addColumnSelector]) column_names[addColumnSelector] = [];
+      column_names[addColumnSelector].push(column.name);
     }
+  }
+  console.log(column_selectors);
+
+  if (includeFull) {
+    column_selectors.push("FULL_ROW_OBJECT");
+    column_names["FULL_ROW_OBJECT"] = ["FULL ROW OBJECT"];
   }
 
   try {
-    //let key = recipe.parser.key
-    //let paths = recipe.parser.paths.reduce((arr, column)).
+    let rows_selectors = Array.isArray(recipe.rows_selector)
+      ? recipe.rows_selector
+      : [recipe.rows_selector];
+    if (rows_selectors.length === 0) rows_selectors = [null];
+    for (let rows_selector of rows_selectors) {
+      let rows_selector_data;
+      if (recipe.filetype === "json")
+        rows_selector_data = parseJSON(content.content, rows_selector, column_selectors);
+      if (recipe.filetype === "html")
+        rows_selector_data = parseHTML(content.content, rows_selector, column_selectors);
 
-    const base_paths = recipe.base_paths.length === 0 ? [null] : recipe.base_paths;
-    for (let base_path of base_paths) {
-      let base_path_data;
-      if (recipe.filetype === "json") base_path_data = parseJSON(content.content, base_path, paths);
-      for (let rawrow of base_path_data) {
+      for (let rawrow of rows_selector_data) {
         const row = {};
         for (let path of Object.keys(rawrow)) {
-          for (let toColumn of pathToName[path]) row[toColumn] = rawrow[path];
+          for (let toColumn of column_names[path]) row[toColumn] = rawrow[path];
         }
         data.push(row);
       }

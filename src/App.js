@@ -35,7 +35,7 @@ export default function App() {
       </Grid.Column>
       <Grid.Column width={12}>
         <Segment style={{ display: "flex", flexDirection: "column" }}>
-          <DropZone allowedFiles={recipe.files} setAcceptedFiles={setAcceptedFiles} devmode />
+          <DropZone allowedFiles={recipe.file} setAcceptedFiles={setAcceptedFiles} devmode />
           <br />
           <FileDropdown
             acceptedFiles={acceptedFiles}

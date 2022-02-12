@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Input } from "semantic-ui-react";
-import SelectorDropdown from "./SelectorDropdown";
+import ListInputs from "./ListInputs";
 
-const [NAMEWIDTH, PATHSWIDTH] = [6, 10];
+const [NAMEWIDTH, SELECTORWIDTH] = [6, 10];
 
 const CreateColumns = ({ recipe, setRecipe }) => {
-  //const [columns, setColumns] = useState([{ name: "", paths: [] }]);
+  //const [columns, setColumns] = useState([{ name: "", selectors: [] }]);
 
   const columns = recipe.columns;
 
   useEffect(() => {
-    const notEmpty = (column) => column.name !== "" || column.paths.length > 0;
+    const notEmpty = (column) => column.name !== "" || column.selector.length > 0;
     const newcolumns = columns.filter(notEmpty);
-    newcolumns.push({ name: "", paths: [] });
+    newcolumns.push({ name: "", selector: [] });
     if (newcolumns.length === columns.length && !notEmpty(columns[columns.length - 1])) return;
     setRecipe((recipe) => ({ ...recipe, columns: newcolumns }));
   }, [columns, setRecipe]);
@@ -23,9 +23,9 @@ const CreateColumns = ({ recipe, setRecipe }) => {
         <Grid.Column width={NAMEWIDTH}>
           <b>Name</b>
         </Grid.Column>
-        <Grid.Column width={PATHSWIDTH}>
+        <Grid.Column width={SELECTORWIDTH}>
           <b>
-            Path <span style={{ color: "grey" }}>+ optional aliases</span>
+            Column <span style={{ color: "grey" }}>+ optional aliases</span>
           </b>
         </Grid.Column>
       </Grid.Row>
@@ -62,9 +62,9 @@ const CreateColumn = ({ i, columns, setColumns }) => {
     return () => clearTimeout(timer);
   }, [delayedName, i, columns, setColumns]);
 
-  const setPaths = (value) => {
+  const setSelector = (value) => {
     const newColumns = [...columns];
-    newColumns[i].paths = value;
+    newColumns[i].selector = value;
     setColumns(newColumns);
   };
 
@@ -78,8 +78,8 @@ const CreateColumn = ({ i, columns, setColumns }) => {
           onChange={(e, d) => setDelayedName(d.value)}
         />
       </Grid.Column>
-      <Grid.Column width={PATHSWIDTH}>
-        <SelectorDropdown values={columns[i].paths} setValues={setPaths} />
+      <Grid.Column width={SELECTORWIDTH}>
+        <ListInputs values={columns[i].selector} setValues={setSelector} />
       </Grid.Column>
     </Grid.Row>
   );

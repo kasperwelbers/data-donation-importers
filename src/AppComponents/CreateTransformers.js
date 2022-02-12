@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Grid, Input } from "semantic-ui-react";
-import SelectorDropdown from "./SelectorDropdown";
+import SelectorDropdown from "./ListInputs";
 
 const [NAMEWIDTH, PATHSWIDTH] = [6, 10];
 

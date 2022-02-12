@@ -3,6 +3,9 @@ import { Container, Pagination, Table, Icon, Checkbox } from "semantic-ui-react"
 
 const PAGESIZE = 5;
 
+// style columns with specific names.
+const COLUMN_STYLES = { "FULL ROW OBJECT": { color: "white", background: "#2185d0" } };
+
 /**
  * PaginationTable wrapper for if the full data is already in memory
  * @param {array} fulldata     array of arrays, where first array hold the column names
@@ -59,7 +62,7 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
   const createHeaderRow = (data, columns) => {
     return columns.map((col, i) => {
       return (
-        <Table.HeaderCell key={i}>
+        <Table.HeaderCell key={i} style={COLUMN_STYLES[col]}>
           <span>{col}</span>
         </Table.HeaderCell>
       );
@@ -77,7 +80,7 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
       const isObject = typeof row[column] === "object";
       const value = isObject ? JSON.stringify(row[column]) : row[column];
       return (
-        <Table.Cell key={i}>
+        <Table.Cell key={i} style={COLUMN_STYLES[column]}>
           <span title={value}>{value}</span>
         </Table.Cell>
       );
