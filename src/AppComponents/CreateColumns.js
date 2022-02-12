@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, Input } from "semantic-ui-react";
 import ListInputs from "./ListInputs";
 
-const [NAMEWIDTH, SELECTORWIDTH] = [6, 10];
+const [NAMEWIDTH, SELECTORWIDTH] = [5, 11];
 
 const CreateColumns = ({ recipe, setRecipe }) => {
   //const [columns, setColumns] = useState([{ name: "", selectors: [] }]);

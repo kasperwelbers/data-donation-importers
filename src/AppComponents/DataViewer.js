@@ -5,6 +5,8 @@ import ReactJson from "react-json-view";
 import { DOMInspector } from "react-inspector";
 import FullDataTable from "./FullDataTable";
 import parserPipeline from "../lib/parsers/parserPipeline";
+import { findRenderedComponentWithType } from "react-dom/cjs/react-dom-test-utils.production.min";
+import transformerPipeline from "../lib/transformers/transformerPipeline";
 
 const DataViewer = ({ content, recipe, loading }) => {
   const [showRaw, setShowRaw] = useState(false);
@@ -72,17 +74,20 @@ const RenderRaw = ({ content }) => {
 };
 
 const RenderProcessed = ({ content, recipe }) => {
-  const [processed, setProcessed] = useState(null);
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    setProcessed(parserPipeline(content, recipe, true));
-  }, [content, recipe, setProcessed]);
+    let data = parserPipeline(content, recipe, true);
+    data = transformerPipeline(data, recipe);
+    setData(data);
+  }, [content, recipe, setData]);
 
-  if (!processed) return null;
+  if (!data) return null;
+
   return (
     <>
       <Header textAlign="center">Processed data</Header>
-      <FullDataTable fullData={processed} />
+      <FullDataTable fullData={data} />
     </>
   );
 };

@@ -19,7 +19,6 @@ export default function parserPipeline(content, recipe, includeFull = false) {
       column_names[addColumnSelector].push(column.name);
     }
   }
-  console.log(column_selectors);
 
   if (includeFull) {
     column_selectors.push("FULL_ROW_OBJECT");
@@ -46,7 +45,6 @@ export default function parserPipeline(content, recipe, includeFull = false) {
         data.push(row);
       }
     }
-    data = applyTransformations(data, recipe);
   } catch (e) {
     console.log(e);
     data = null;
@@ -54,22 +52,6 @@ export default function parserPipeline(content, recipe, includeFull = false) {
 
   return data;
 }
-
-const applyTransformations = (data, recipe) => {
-  if (!recipe?.parser?.transform) return data;
-
-  // for (let t of recipe.parser.transform) {
-  //   let name, transform, func, column;
-  //   [name, transform] = t.split(/=(.+)/).map((parts) => parts.trim());
-  //   const hasfunction = /^[a-zA-Z]+\(.+\)$/.test(transform);
-  //   // if (hasfunction) {
-  //   //   [func, column] =
-  //   // }
-  //   console.log(name, transform);
-  // }
-  // console.log(data, recipe);
-  return data;
-};
 
 // const transformFunctions = {
 //   date: (value) => new Date(value),

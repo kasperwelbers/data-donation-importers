@@ -5,19 +5,14 @@ import { recipes } from "../recipes.js";
 import CreateColumns from "./CreateColumns";
 import ListInputs from "./ListInputs";
 import SelectorHelp from "./SelectorHelp";
+import CreateTransformers from "./CreateTransformers";
 
 const new_recipe = {
   name: "New recipe",
-  file: ["history"],
+  file: [],
   filetype: "json",
-  rows_selector: ["Browser History"],
-  columns: [
-    { name: "URL", selector: ["url"] },
-    { name: "Title", selector: ["title"] },
-    { name: "transition", selector: ["page_transition"] },
-    { name: "client_id", selector: ["client_id"] },
-    { name: "Date", selector: ["time_usec"] },
-  ],
+  rows_selector: ["$."],
+  columns: [],
 };
 
 const RECIPES = { new_recipe, ...recipes };
@@ -85,7 +80,8 @@ const RecipeForms = ({ recipe, setRecipe }) => {
       </Form.Field>
       <Form.Field style={{ width: "100%" }}>
         <label>
-          File selector <span style={{ color: "grey" }}>+ optional aliases</span>
+          File selector{" "}
+          <span style={{ color: "grey", float: "right" }}>use multiple rows to add aliases</span>
         </label>
 
         <ListInputs values={recipe.file} setValues={setFile} />
@@ -105,17 +101,20 @@ const RecipeForms = ({ recipe, setRecipe }) => {
       </Form.Field>
 
       <Divider />
-      <Header>Extracting columns</Header>
+      <Header>Extract data</Header>
       <SelectorHelp filetype={recipe.filetype} />
       <Form.Field>
         <label>
-          Rows selector <span style={{ color: "grey" }}>+ optional aliases</span>
+          Rows selector{" "}
+          <span style={{ color: "grey", float: "right" }}>use multiple rows to add aliases</span>
         </label>
         <ListInputs values={recipe.rows_selector} setValues={setRowsSelector} />
       </Form.Field>
-      {/* <JsonForms recipe={recipe} setRecipe={setRecipe} />
-        <Transform recipe={recipe} setRecipe={setRecipe} /> */}
       <CreateColumns recipe={recipe} setRecipe={setRecipe} />
+
+      <Divider />
+      <Header>Transform columns</Header>
+      <CreateTransformers recipe={recipe} setRecipe={setRecipe} />
     </>
   );
 };

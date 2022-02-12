@@ -28,12 +28,12 @@ export default function App() {
 
   return (
     <Grid columns={2} style={{ margin: "10px" }}>
-      <Grid.Column width={4}>
+      <Grid.Column width={4} style={{ overflow: "auto", height: "100vh" }}>
         <Grid.Row>
           <RecipeTemplate recipe={recipe} setRecipe={setRecipe} content={content} />
         </Grid.Row>
       </Grid.Column>
-      <Grid.Column width={12}>
+      <Grid.Column width={12} style={{ overflow: "auto", height: "100vh" }}>
         <Segment style={{ display: "flex", flexDirection: "column" }}>
           <DropZone allowedFiles={recipe.file} setAcceptedFiles={setAcceptedFiles} devmode />
           <br />

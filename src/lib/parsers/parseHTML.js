@@ -37,7 +37,7 @@ const extractTEXT = (el) => {
   const text = [];
   for (let child of el.childNodes) {
     if (child.nodeType !== Node.TEXT_NODE) continue;
-    text.push(child.textContent);
+    text.push(child.textContent.replace(/&nbsp;/g, ""));
   }
   return text.join(" ");
 };
