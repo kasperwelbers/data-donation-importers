@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Grid, Input } from "semantic-ui-react";
 import ListInputs from "./ListInputs";
 
-const [NAMEWIDTH, SELECTORWIDTH] = [5, 11];
+const [NAMEWIDTH, SELECTORWIDTH] = [4, 12];
 
 const CreateColumns = ({ recipe, setRecipe }) => {
   //const [columns, setColumns] = useState([{ name: "", selectors: [] }]);
@@ -21,11 +21,11 @@ const CreateColumns = ({ recipe, setRecipe }) => {
     <Grid style={{ paddingBottom: "30px" }}>
       <Grid.Row style={{ paddingBottom: "0" }}>
         <Grid.Column width={NAMEWIDTH}>
-          <b>Name</b>
+          <b>Column name</b>
         </Grid.Column>
         <Grid.Column width={SELECTORWIDTH}>
           <b>
-            Column <span style={{ color: "grey" }}>+ optional aliases</span>
+            Column selector <span style={{ color: "grey" }}>+ optional aliases</span>
           </b>
         </Grid.Column>
       </Grid.Row>

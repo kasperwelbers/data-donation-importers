@@ -1,12 +1,13 @@
 //import { reparseAsUTF8 } from "./reparseAsUTF8";
 import { JSONPath } from "jsonpath-plus";
 
-export default function parseJSON(content, rows_selector, column_selectors) {
+export default function parseJSON(content, rows_selector, column_selectors, head = false) {
   if (column_selectors.length === 0) return [];
 
   // JSONPATH: https://goessner.net/articles/JsonPath/
   const wrap = false;
   let objects = JSONPath({ path: rows_selector || "$.", json: content, wrap });
+  if (head) objects = objects.slice(0, 5);
   if (!objects) return [];
   let data = objects.map((json) => {
     const row = {};

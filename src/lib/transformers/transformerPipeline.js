@@ -2,15 +2,18 @@ import { transformerFunctions } from "./transformerFunctions";
 
 export default function transformerPipeline(data, recipe) {
   const transformers = recipe.transformers;
+  if (!transformers) return data;
 
   for (let transformer of transformers) {
     try {
       if (!transformer.column || !transformer.transformer) continue;
-      const transform = transformerFunctions[transformer.transformer].transform;
+      const transformFunction = transformerFunctions[transformer.transformer].transform;
+      const argArray = getArgumentArray(transformer.transformer, transformer.arguments);
       for (let i = 0; i < data.length; i++) {
-        const argArray = [data[i][transformer.column], ...transformer.arguments];
-        if (argArray[0] == null) continue;
-        data[i][transformer.column] = transform(...argArray);
+        const input = data[i][transformer.column];
+        if (input == null) continue;
+        const toColumn = transformer.new_column || transformer.column;
+        data[i][toColumn] = transformFunction(...[input, ...argArray]);
       }
     } catch (e) {
       console.log(e);
@@ -18,3 +21,9 @@ export default function transformerPipeline(data, recipe) {
   }
   return data;
 }
+
+const getArgumentArray = (transformer, args) => {
+  return transformerFunctions[transformer].arguments.map((arg) => {
+    return args[arg.name] || arg.default;
+  });
+};

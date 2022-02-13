@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Container, Segment, Loader, Dimmer, Message, Header, Button } from "semantic-ui-react";
+import {
+  Container,
+  Segment,
+  Loader,
+  Dimmer,
+  Message,
+  Header,
+  Button,
+  Checkbox,
+} from "semantic-ui-react";
 
 import ReactJson from "react-json-view";
 import { DOMInspector } from "react-inspector";
 import FullDataTable from "./FullDataTable";
 import parserPipeline from "../lib/parsers/parserPipeline";
-import { findRenderedComponentWithType } from "react-dom/cjs/react-dom-test-utils.production.min";
 import transformerPipeline from "../lib/transformers/transformerPipeline";
 
-const DataViewer = ({ content, recipe, loading }) => {
+const DataViewer = ({ content, recipe, loading, updateRecipeIn }) => {
   const [showRaw, setShowRaw] = useState(false);
 
   if (!recipe || !content?.content) return null;
@@ -75,18 +83,26 @@ const RenderRaw = ({ content }) => {
 
 const RenderProcessed = ({ content, recipe }) => {
   const [data, setData] = useState(null);
+  const [head, setHead] = useState(true);
 
   useEffect(() => {
-    let data = parserPipeline(content, recipe, true);
+    let data = parserPipeline(content, recipe, false, head);
     data = transformerPipeline(data, recipe);
     setData(data);
-  }, [content, recipe, setData]);
+  }, [content, recipe, head, setData]);
 
   if (!data) return null;
 
   return (
     <>
-      <Header textAlign="center">Processed data</Header>
+      <Header textAlign="center">
+        Processed data{" "}
+        <span style={{ marginLeft: "10px", color: "grey" }}>
+          (
+          <Checkbox checked={head} onChange={(e, d) => setHead(d.checked)} label="only first 5" />)
+        </span>
+      </Header>
+
       <FullDataTable fullData={data} />
     </>
   );

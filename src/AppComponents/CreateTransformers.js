@@ -1,21 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Checkbox, Dropdown, Grid, Form, Input } from "semantic-ui-react";
 import { transformerFunctions } from "../lib/transformers/transformerFunctions";
+import ListInputs from "./ListInputs";
 
-const [NAMEWIDTH, TRANSFORMERWIDTH] = [5, 11];
+const [COLUMNWIDTH, TRANSFORMERWIDTH, NEWCOLUMNWIDTH] = [4, 8, 4];
 
-const options = Object.keys(transformerFunctions).map((key) => ({
+const TRANSFORMER_OPTIONS = Object.keys(transformerFunctions).map((key) => ({
   key,
   value: key,
   text: transformerFunctions[key].label,
+  content: (
+    <>
+      {transformerFunctions[key].label}
+      <br />
+      <span style={{ color: "grey", fontSize: "0.7em" }}>
+        {transformerFunctions[key].description}
+      </span>
+    </>
+  ),
 }));
 
 const CreateTransformers = ({ recipe, setRecipe }) => {
   useEffect(() => {
     const transformers = recipe.transformers || [];
-    const notEmpty = (transformer) => transformer.name !== "";
+    const notEmpty = (transformer) => transformer.column !== "";
     const newtransformers = transformers.filter(notEmpty);
-    newtransformers.push({ name: "", transformer: null });
+    newtransformers.push({ column: "", new_column: "", transformer: null });
     if (
       newtransformers.length === transformers.length &&
       !notEmpty(transformers[transformers.length - 1])
@@ -28,11 +38,14 @@ const CreateTransformers = ({ recipe, setRecipe }) => {
   return (
     <Grid style={{ paddingBottom: "30px" }}>
       <Grid.Row style={{ paddingBottom: "0" }}>
-        <Grid.Column width={NAMEWIDTH}>
+        <Grid.Column width={COLUMNWIDTH}>
           <b>Column</b>
         </Grid.Column>
         <Grid.Column width={TRANSFORMERWIDTH}>
           <b>Transformer</b>
+        </Grid.Column>
+        <Grid.Column width={NEWCOLUMNWIDTH}>
+          <b>New Column</b>
         </Grid.Column>
       </Grid.Row>
       {recipe.transformers.map((transformer, i) => (
@@ -48,24 +61,22 @@ const CreateTransformers = ({ recipe, setRecipe }) => {
 };
 
 const Transformer = ({ i, transformers, setTransformers }) => {
-  const [delayedName, setDelayedName] = useState("");
-
-  useEffect(() => {
-    setDelayedName(transformers[i].column);
-  }, [transformers, i]);
-
-  useEffect(() => {
-    if (delayedName === transformers[i].column) return;
-    const timer = setTimeout(() => {
-      transformers[i].column = delayedName;
-      setTransformers([...transformers]);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [delayedName, i, transformers, setTransformers]);
+  const setColumn = (value) => {
+    transformers[i].column = value;
+    setTransformers([...transformers]);
+  };
 
   const setTransformer = (value) => {
     transformers[i].transformer = value;
-    transformers[i].arguments = transformerFunctions[value].arguments.map((arg) => arg.default);
+    transformers[i].arguments = transformerFunctions[value].arguments.reduce((obj, arg) => {
+      obj[arg.name] = arg.default;
+      return obj;
+    }, {});
+    setTransformers([...transformers]);
+  };
+
+  const setNewColumn = (value) => {
+    transformers[i].new_column = value;
     setTransformers([...transformers]);
   };
 
@@ -77,21 +88,31 @@ const Transformer = ({ i, transformers, setTransformers }) => {
   return (
     <>
       <Grid.Row style={{ padding: "1px 0" }}>
-        <Grid.Column width={NAMEWIDTH} style={{ paddingRight: "0" }}>
+        <Grid.Column width={COLUMNWIDTH} style={{ paddingRight: "0" }}>
           <Input
             fluid
             placeholder="column"
-            value={delayedName}
-            onChange={(e, d) => setDelayedName(d.value)}
+            value={transformers[i].column}
+            onChange={(e, d) => setColumn(d.value)}
           />
         </Grid.Column>
         <Grid.Column width={TRANSFORMERWIDTH}>
           <Dropdown
             fluid
             selection
-            options={options}
+            search
+            options={TRANSFORMER_OPTIONS}
             value={transformers[i].transformer}
             onChange={(e, d) => setTransformer(d.value)}
+            style={{ maxHeight: "30px" }}
+          />
+        </Grid.Column>
+        <Grid.Column width={NEWCOLUMNWIDTH} style={{ paddingLeft: "0" }}>
+          <Input
+            fluid
+            placeholder="optional"
+            value={transformers[i].new_column}
+            onChange={(e, d) => setNewColumn(d.value)}
           />
         </Grid.Column>
       </Grid.Row>
@@ -105,10 +126,10 @@ const Transformer = ({ i, transformers, setTransformers }) => {
 };
 
 const TransformerArguments = React.memo(({ transformer, args, setArgs }) => {
-  const setValue = (i, value) => {
-    const newArgs = [...args];
-    if (newArgs[i] === value) return;
-    newArgs[i] = value;
+  const setValue = (name, value) => {
+    const newArgs = { ...args };
+    if (JSON.stringify(newArgs[name]) === JSON.stringify(value)) return;
+    newArgs[name] = value;
     setArgs(newArgs);
   };
 
@@ -125,10 +146,22 @@ const TransformerArguments = React.memo(({ transformer, args, setArgs }) => {
         {transformerFunctions[transformer].arguments.map((arg, i) => {
           return (
             <Form.Field
+              key={arg.name + i}
               style={{ paddingRight: "5px", flex: arg.type === "bool" ? "0 1 auto" : "1 1 auto" }}
             >
-              <label style={{ fontSize: "0.7em", marginBottom: "0" }}>{arg.name}</label>
-              <ArgInput arg={arg} value={args[i]} setValue={(value) => setValue(i, value)} />
+              <label style={{ fontSize: "0.7em", marginBottom: "0" }}>
+                {arg.name}
+                {arg.link ? (
+                  <a href={arg.link} target="_blank" rel="noopener noreferrer">
+                    {"   "}(help)
+                  </a>
+                ) : null}
+              </label>
+              <ArgInput
+                arg={arg}
+                value={args[arg.name] || arg.default}
+                setValue={(value) => setValue(arg.name, value)}
+              />
             </Form.Field>
           );
         })}
@@ -138,36 +171,46 @@ const TransformerArguments = React.memo(({ transformer, args, setArgs }) => {
 });
 
 const ArgInput = ({ arg, value, setValue }) => {
-  const [delayed, setDelayed] = useState(value);
-
-  useEffect(() => {
-    setDelayed(value);
-  }, [value]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setValue(delayed);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [delayed, setValue]);
-
   switch (arg.type) {
     case "string":
-      return <Input size="mini" value={delayed} onChange={(e, d) => setDelayed(d.value)} fluid />;
+      return (
+        <Input
+          size="mini"
+          placeholder={arg.placeholder}
+          value={value}
+          onChange={(e, d) => setValue(d.value)}
+          fluid
+        />
+      );
+    case "number":
+      return (
+        <Input
+          type="number"
+          placeholder={arg.placeholder}
+          size="mini"
+          value={value}
+          onChange={(e, d) => setValue(d.value)}
+          fluid
+        />
+      );
     case "bool":
       return (
-        <Checkbox size="mini" checked={delayed} onChange={(e, d) => setDelayed(d.checked)} toggle />
+        <Checkbox size="mini" checked={value} onChange={(e, d) => setValue(d.checked)} toggle />
       );
     case "option":
       const options = arg.options.map((a) => ({ key: a, value: a, text: a }));
       return (
         <Dropdown
-          selection
+          button
+          size="mini"
           options={options}
-          value={delayed}
-          onChange={(e, d) => setDelayed(d.value)}
+          value={value}
+          onChange={(e, d) => setValue(d.value)}
+          style={{ padding: "8px", marginBottom: "10px" }}
         />
       );
+    case "string_multiple":
+      return <ListInputs values={value} setValues={setValue} message={arg.placeholder} />;
     default:
       return null;
   }

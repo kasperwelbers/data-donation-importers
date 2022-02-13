@@ -67,7 +67,8 @@ const htmlHelp = () => {
       <br />
       By default, the textContent of a selected node is extracted. To extract an attribute, add{" "}
       <b>@[attribute]</b> (e.g., a@href). Also, use <b>@TEXT</b> to only get the text content of the
-      selected node (exluding the children). With <b>@HTML</b> you get the full outerHTML.
+      selected node (exluding the children). With <b>@OUTER</b> and <b>@INNER</b> you get the full
+      outerHTML and innerHTML.
     </>
   );
   return { short, details };

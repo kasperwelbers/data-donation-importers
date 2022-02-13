@@ -1,7 +1,8 @@
-export default function parseHTML(content, rows_selector, column_selectors) {
+export default function parseHTML(content, rows_selector, column_selectors, head = false) {
   if (column_selectors.length === 0) return [];
 
   let elements = Array.from(content.querySelectorAll(rows_selector));
+  if (head) elements = elements.slice(0, 5);
 
   if (!elements || elements.length === 0) return [];
   let data = elements.map((el) => {
@@ -18,8 +19,10 @@ export default function parseHTML(content, rows_selector, column_selectors) {
       if (!extractor) {
         row[column_selector] = selected.textContent;
       } else {
-        if (extractor === "HTML") {
+        if (extractor === "OUTER") {
           row[column_selector] = selected.outerHTML;
+        } else if (extractor === "INNER") {
+          row[column_selector] = selected.innerHTML;
         } else if (extractor === "TEXT") {
           row[column_selector] = extractTEXT(selected);
         } else {
@@ -37,7 +40,7 @@ const extractTEXT = (el) => {
   const text = [];
   for (let child of el.childNodes) {
     if (child.nodeType !== Node.TEXT_NODE) continue;
-    text.push(child.textContent.replace(/&nbsp;/g, ""));
+    text.push(child.textContent.trim());
   }
   return text.join(" ");
 };

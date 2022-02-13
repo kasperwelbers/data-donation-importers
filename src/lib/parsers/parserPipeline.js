@@ -1,13 +1,12 @@
 import parseHTML from "./parseHTML";
 import parseJSON from "./parseJSON";
 
-export default function parserPipeline(content, recipe, includeFull = false) {
+export default function parserPipeline(content, recipe, includeFull = false, head = false) {
   let data = [];
   if (!recipe?.columns) return [];
 
   const column_selectors = [];
   const column_names = {};
-  console.log(recipe);
   for (let column of recipe.columns) {
     const column_selector_array = Array.isArray(column.selector)
       ? column.selector
@@ -33,9 +32,9 @@ export default function parserPipeline(content, recipe, includeFull = false) {
     for (let rows_selector of rows_selectors) {
       let rows_selector_data;
       if (recipe.filetype === "json")
-        rows_selector_data = parseJSON(content.content, rows_selector, column_selectors);
+        rows_selector_data = parseJSON(content.content, rows_selector, column_selectors, head);
       if (recipe.filetype === "html")
-        rows_selector_data = parseHTML(content.content, rows_selector, column_selectors);
+        rows_selector_data = parseHTML(content.content, rows_selector, column_selectors, head);
 
       for (let rawrow of rows_selector_data) {
         const row = {};

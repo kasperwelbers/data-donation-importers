@@ -16,26 +16,9 @@ const new_recipe = {
 };
 
 const RECIPES = { new_recipe, ...recipes };
+const DELAY = 1000;
 
 const RecipeTemplate = ({ recipe, setRecipe }) => {
-  console.log(recipe);
-  return (
-    <Segment>
-      <Header textAlign="center">Data Import Recipes</Header>
-
-      <Form>
-        <Form.Field>
-          <label>Select Recipe</label>
-          <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
-        </Form.Field>
-        <RecipeForms recipe={recipe} setRecipe={setRecipe} />
-      </Form>
-    </Segment>
-  );
-};
-
-const RecipeForms = ({ recipe, setRecipe }) => {
-  // all typed values are passed via delayedRecipe
   const [delayedRecipe, setDelayedRecipe] = useState(recipe);
 
   useEffect(() => {
@@ -45,12 +28,30 @@ const RecipeForms = ({ recipe, setRecipe }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setRecipe(delayedRecipe);
-    }, 500);
+    }, DELAY);
     return () => clearTimeout(timer);
   }, [delayedRecipe, setRecipe]);
 
+  return (
+    <Segment>
+      <Header textAlign="center">Data Import Recipes</Header>
+
+      <Form>
+        <Form.Field>
+          <label>Select Recipe</label>
+          <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
+        </Form.Field>
+        <RecipeForms recipe={delayedRecipe} setRecipe={setDelayedRecipe} />
+      </Form>
+    </Segment>
+  );
+};
+
+const RecipeForms = ({ recipe, setRecipe }) => {
+  // all typed values are passed via delayedRecipe
+
   const setRecipeName = (e, d) => {
-    setDelayedRecipe((recipe) => ({ ...recipe, name: d.value }));
+    setRecipe((recipe) => ({ ...recipe, name: d.value }));
   };
 
   const setFileType = (e, d) => {
@@ -65,18 +66,13 @@ const RecipeForms = ({ recipe, setRecipe }) => {
     setRecipe((recipe) => ({ ...recipe, rows_selector }));
   };
 
-  if (!delayedRecipe || !delayedRecipe.name || !delayedRecipe.filetype || !delayedRecipe.file)
-    return null;
+  if (!recipe || !recipe.name || !recipe.filetype || !recipe.file) return null;
 
   return (
     <>
       <Form.Field>
         <label>Name</label>
-        <Input
-          value={delayedRecipe.name}
-          placeholder={"Name of the recipe"}
-          onChange={setRecipeName}
-        />
+        <Input value={recipe.name} placeholder={"Name of the recipe"} onChange={setRecipeName} />
       </Form.Field>
       <Form.Field style={{ width: "100%" }}>
         <label>

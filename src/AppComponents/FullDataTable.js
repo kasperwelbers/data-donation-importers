@@ -77,11 +77,17 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
 
   const createRowCells = (row) => {
     let cells = columns.map((column, i) => {
-      const isObject = typeof row[column] === "object";
-      const value = isObject ? JSON.stringify(row[column]) : row[column];
+      let value = row[column];
+      const isObject = typeof value === "object";
+      const isDate = value instanceof Date;
+      if (isDate) {
+        value = value.toString();
+      } else if (isObject) {
+        value = JSON.stringify(value);
+      }
       return (
         <Table.Cell key={i} style={COLUMN_STYLES[column]}>
-          <span title={value}>{value}</span>
+          <span title={value}> {value} </span>{" "}
         </Table.Cell>
       );
     });
