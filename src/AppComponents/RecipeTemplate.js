@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, Segment, Dropdown, Input, Header, Divider } from "semantic-ui-react";
+import { Form, Segment, Dropdown, Input, Header, Divider, Button, Popup } from "semantic-ui-react";
 import RecipeSelector from "./RecipeSelector";
 import { recipes } from "../recipes.js";
 import CreateColumns from "./CreateColumns";
 import ListInputs from "./ListInputs";
 import SelectorHelp from "./SelectorHelp";
 import CreateTransformers from "./CreateTransformers";
+import YAML from "json-to-pretty-yaml";
 
 const new_recipe = {
   name: "New recipe",
@@ -39,11 +40,36 @@ const RecipeTemplate = ({ recipe, setRecipe }) => {
       <Form>
         <Form.Field>
           <label>Select Recipe</label>
-          <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
+          <div style={{ display: "flex" }}>
+            <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
+            <Button.Group>
+              <JSONViewer recipe={recipe} />
+              <YAMLViewer recipe={recipe} />
+            </Button.Group>
+          </div>
         </Form.Field>
         <RecipeForms recipe={delayedRecipe} setRecipe={setDelayedRecipe} />
       </Form>
     </Segment>
+  );
+};
+
+const JSONViewer = ({ recipe }) => {
+  return (
+    <Popup on="click" wide="very" trigger={<Button secondary>JSON</Button>}>
+      <Popup.Content>
+        <xmp>{JSON.stringify(recipe, null, 2)}</xmp>
+      </Popup.Content>
+    </Popup>
+  );
+};
+const YAMLViewer = ({ recipe }) => {
+  return (
+    <Popup on="click" wide="very" trigger={<Button secondary>YAML</Button>}>
+      <Popup.Content>
+        <xmp>{YAML.stringify(recipe)}</xmp>
+      </Popup.Content>
+    </Popup>
   );
 };
 

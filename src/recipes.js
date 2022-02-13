@@ -2,7 +2,7 @@ const google_takeout_browsing_history = {
   name: "Google Takeout Browsing History",
   file: ["BrowserHistory.json", "BrausingHistörie.jsön"],
   filetype: "json",
-  rows_selector: "$.Browser History",
+  rows_selector: "Browser History",
   columns: [
     { name: "title", selector: "title" },
     { name: "url", selector: "url" },
