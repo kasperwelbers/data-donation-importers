@@ -1,6 +1,10 @@
 import { transformerFunctions } from "./transformerFunctions";
+import standardizeRecipe from "../recipes/standardizeRecipe";
 
 export default function transformerPipeline(data, recipe) {
+  console.log("go");
+  recipe = standardizeRecipe(recipe);
+
   const transformers = recipe.transformers;
   if (!transformers) return data;
 
@@ -24,6 +28,8 @@ export default function transformerPipeline(data, recipe) {
 
 const getArgumentArray = (transformer, args) => {
   return transformerFunctions[transformer].arguments.map((arg) => {
-    return args[arg.name] || arg.default;
+    let value = args[arg.name] || arg.default;
+    if (arg.type === "string_multiple" && !Array.isArray(value)) value = [value];
+    return value;
   });
 };

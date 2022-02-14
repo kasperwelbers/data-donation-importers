@@ -96,10 +96,15 @@ const RenderProcessed = ({ content, recipe }) => {
   return (
     <>
       <Header textAlign="center">
-        Processed data{" "}
-        <span style={{ marginLeft: "10px", color: "grey" }}>
-          (
-          <Checkbox checked={head} onChange={(e, d) => setHead(d.checked)} label="only first 5" />)
+        Processed data <br />
+        <span style={{ marginLeft: "10px", color: "grey", fontSize: "12px" }}>
+          <Checkbox
+            checked={head}
+            toggle
+            label="only show first 5"
+            onChange={(e, d) => setHead(d.checked)}
+            style={{ transform: "scale(0.7)" }}
+          />
         </span>
       </Header>
 

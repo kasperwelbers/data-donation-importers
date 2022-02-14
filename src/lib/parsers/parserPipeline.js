@@ -1,7 +1,9 @@
 import parseHTML from "./parseHTML";
 import parseJSON from "./parseJSON";
+import standardizeRecipe from "../recipes/standardizeRecipe";
 
 export default function parserPipeline(content, recipe, includeFull = false, head = false) {
+  recipe = standardizeRecipe(recipe);
   let data = [];
   if (!recipe?.columns) return [];
 

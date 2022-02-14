@@ -3,7 +3,7 @@ import { Checkbox, Dropdown, Grid, Form, Input } from "semantic-ui-react";
 import { transformerFunctions } from "../lib/transformers/transformerFunctions";
 import ListInputs from "./ListInputs";
 
-const [COLUMNWIDTH, TRANSFORMERWIDTH, NEWCOLUMNWIDTH] = [4, 8, 4];
+const [TRANSFORMERWIDTH, COLUMNWIDTH, NEWCOLUMNWIDTH] = [8, 4, 4];
 
 const TRANSFORMER_OPTIONS = Object.keys(transformerFunctions).map((key) => ({
   key,
@@ -35,14 +35,15 @@ const CreateTransformers = ({ recipe, setRecipe }) => {
   }, [recipe.transformers, setRecipe]);
 
   if (!recipe.transformers) return null;
+
   return (
     <Grid style={{ paddingBottom: "30px" }}>
       <Grid.Row style={{ paddingBottom: "0" }}>
-        <Grid.Column width={COLUMNWIDTH}>
-          <b>Column</b>
-        </Grid.Column>
         <Grid.Column width={TRANSFORMERWIDTH}>
           <b>Transformer</b>
+        </Grid.Column>
+        <Grid.Column width={COLUMNWIDTH}>
+          <b>Column</b>
         </Grid.Column>
         <Grid.Column width={NEWCOLUMNWIDTH}>
           <b>New Column</b>
@@ -88,30 +89,31 @@ const Transformer = ({ i, transformers, setTransformers }) => {
   return (
     <>
       <Grid.Row style={{ padding: "1px 0" }}>
-        <Grid.Column width={COLUMNWIDTH} style={{ paddingRight: "0" }}>
-          <Input
-            fluid
-            placeholder="column"
-            value={transformers[i].column}
-            onChange={(e, d) => setColumn(d.value)}
-          />
-        </Grid.Column>
         <Grid.Column width={TRANSFORMERWIDTH}>
           <Dropdown
             fluid
             selection
             search
             options={TRANSFORMER_OPTIONS}
-            value={transformers[i].transformer}
+            value={transformers[i].transformer || null}
             onChange={(e, d) => setTransformer(d.value)}
             style={{ maxHeight: "30px" }}
           />
         </Grid.Column>
+        <Grid.Column width={COLUMNWIDTH} style={{ paddingLeft: "0" }}>
+          <Input
+            fluid
+            placeholder="column"
+            value={transformers[i].column || ""}
+            onChange={(e, d) => setColumn(d.value)}
+          />
+        </Grid.Column>
+
         <Grid.Column width={NEWCOLUMNWIDTH} style={{ paddingLeft: "0" }}>
           <Input
             fluid
             placeholder="optional"
-            value={transformers[i].new_column}
+            value={transformers[i].new_column || ""}
             onChange={(e, d) => setNewColumn(d.value)}
           />
         </Grid.Column>

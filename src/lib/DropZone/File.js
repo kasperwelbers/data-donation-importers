@@ -39,7 +39,7 @@ export default class File {
       if (filetype === "html") content = new DOMParser().parseFromString(text, "text/html");
       if (filetype === "csv") content = Papa.parse(text, { header: true }).data;
     } catch (e) {
-      console.log(e);
+      console.log(this.name, e);
     }
 
     if (content === null) {
