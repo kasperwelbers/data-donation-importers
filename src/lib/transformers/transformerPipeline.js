@@ -2,7 +2,6 @@ import { transformerFunctions } from "./transformerFunctions";
 import standardizeRecipe from "../recipes/standardizeRecipe";
 
 export default function transformerPipeline(data, recipe) {
-  console.log("go");
   recipe = standardizeRecipe(recipe);
 
   const transformers = recipe.transformers;

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Pagination, Table, Icon, Checkbox } from "semantic-ui-react";
 
-const PAGESIZE = 5;
-
 // style columns with specific names.
 const COLUMN_STYLES = { "FULL ROW OBJECT": { color: "white", background: "#2185d0" } };
 
@@ -10,14 +8,14 @@ const COLUMN_STYLES = { "FULL ROW OBJECT": { color: "white", background: "#2185d
  * PaginationTable wrapper for if the full data is already in memory
  * @param {array} fulldata     array of arrays, where first array hold the column names
  */
-export default function FullDataTable({ fullData }) {
+export default function FullDataTable({ fullData, pagesize = 5 }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
   const [columns, setColumns] = useState(null);
 
   const pageChange = (activePage) => {
-    const offset = (activePage - 1) * PAGESIZE;
-    const newdata = fullData.slice(offset, offset + PAGESIZE);
+    const offset = (activePage - 1) * pagesize;
+    const newdata = fullData.slice(offset, offset + pagesize);
     setData(newdata);
   };
 
@@ -29,9 +27,9 @@ export default function FullDataTable({ fullData }) {
     setColumns(null);
 
     const n = fullData.length;
-    setPages(Math.ceil(n / PAGESIZE));
+    setPages(Math.ceil(n / pagesize));
     let newdata = [];
-    if (n > 0) newdata = fullData.slice(0, PAGESIZE);
+    if (n > 0) newdata = fullData.slice(0, pagesize);
     setData(newdata);
 
     // get all columns used in data, so that table shows them if missing in a batch
@@ -42,7 +40,7 @@ export default function FullDataTable({ fullData }) {
       }
     }
     setColumns(Object.keys(columnMap));
-  }, [fullData]);
+  }, [fullData, pagesize]);
 
   if (!data || data.length === 0 || !columns || columns.length === 0) return null;
 

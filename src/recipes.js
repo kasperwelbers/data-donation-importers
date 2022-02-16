@@ -11,9 +11,9 @@ const google_takeout_browsing_history = {
   ],
   transformers: [
     {
+      transformer: "int_to_date",
       column: "time",
       new_column: "date",
-      transformer: "int_to_date",
       arguments: { unit: "microsecond" },
     },
   ],
@@ -34,9 +34,9 @@ const google_takeout_youtube_history_json = {
   transformers: [
     { column: "raw_date", transformer: "replace", arguments: { regex: "watched " } },
     {
+      transformer: "str_to_date",
       column: "raw_date",
       new_column: "date",
-      transformer: "str_to_date",
       arguments: {},
     },
   ],
@@ -55,11 +55,11 @@ const google_takeout_youtube_history_html = {
     { name: "raw_date", selector: ".content-cell @TEXT" },
   ],
   transformers: [
-    { column: "raw_date", transformer: "replace", arguments: { regex: "watched " } },
+    { transformer: "replace", column: "raw_date", arguments: { regex: "watched " } },
     {
+      transformer: "str_to_date",
       column: "raw_date",
       new_column: "date",
-      transformer: "str_to_date",
       arguments: { format: ["D MMM YYYY, hh:mm:ss"] },
     },
   ],

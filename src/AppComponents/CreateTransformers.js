@@ -23,9 +23,9 @@ const TRANSFORMER_OPTIONS = Object.keys(transformerFunctions).map((key) => ({
 const CreateTransformers = ({ recipe, setRecipe }) => {
   useEffect(() => {
     const transformers = recipe.transformers || [];
-    const notEmpty = (transformer) => transformer.column !== "";
+    const notEmpty = (transformer) => transformer.transformer !== null;
     const newtransformers = transformers.filter(notEmpty);
-    newtransformers.push({ column: "", new_column: "", transformer: null });
+    newtransformers.push({ transformer: null, column: "", new_column: "" });
     if (
       newtransformers.length === transformers.length &&
       !notEmpty(transformers[transformers.length - 1])
@@ -68,11 +68,16 @@ const Transformer = ({ i, transformers, setTransformers }) => {
   };
 
   const setTransformer = (value) => {
-    transformers[i].transformer = value;
-    transformers[i].arguments = transformerFunctions[value].arguments.reduce((obj, arg) => {
-      obj[arg.name] = arg.default;
-      return obj;
-    }, {});
+    if (value) {
+      transformers[i].transformer = value;
+      transformers[i].arguments = transformerFunctions[value].arguments.reduce((obj, arg) => {
+        obj[arg.name] = arg.default;
+        return obj;
+      }, {});
+    } else {
+      transformers[i].transformer = null;
+      delete transformers[i].arguments;
+    }
     setTransformers([...transformers]);
   };
 
@@ -93,6 +98,7 @@ const Transformer = ({ i, transformers, setTransformers }) => {
           <Dropdown
             fluid
             selection
+            clearable
             search
             options={TRANSFORMER_OPTIONS}
             value={transformers[i].transformer || null}

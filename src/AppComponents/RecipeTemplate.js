@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Form, Segment, Dropdown, Input, Header, Divider, Button, Popup } from "semantic-ui-react";
+import {
+  Form,
+  Segment,
+  Dropdown,
+  Input,
+  Header,
+  Divider,
+  Button,
+  Popup,
+  ButtonGroup,
+} from "semantic-ui-react";
 import RecipeSelector from "./RecipeSelector";
 import { recipes } from "../recipes.js";
 import CreateColumns from "./CreateColumns";
@@ -42,10 +52,7 @@ const RecipeTemplate = ({ recipe, setRecipe }) => {
           <label>Select Recipe</label>
           <div style={{ display: "flex" }}>
             <RecipeSelector recipes={RECIPES} setRecipe={setRecipe} />
-            <Button.Group>
-              <JSONViewer recipe={recipe} />
-              <YAMLViewer recipe={recipe} />
-            </Button.Group>
+            <RawViewers recipe={recipe} />
           </div>
         </Form.Field>
         <RecipeForms recipe={delayedRecipe} setRecipe={setDelayedRecipe} />
@@ -54,22 +61,38 @@ const RecipeTemplate = ({ recipe, setRecipe }) => {
   );
 };
 
-const JSONViewer = ({ recipe }) => {
-  return (
-    <Popup on="click" wide="very" trigger={<Button secondary>JSON</Button>}>
-      <Popup.Content>
-        <xmp>{JSON.stringify(recipe, null, 2)}</xmp>
-      </Popup.Content>
-    </Popup>
+const RawViewers = ({ recipe }) => {
+  if (!recipe || Object.keys(recipe).length === 0) return null;
+
+  const cleanRecipe = { ...recipe };
+  cleanRecipe.columns = cleanRecipe.columns.filter(
+    (col) => col.name !== "" && col.selector.length > 0
   );
-};
-const YAMLViewer = ({ recipe }) => {
+  cleanRecipe.transformers = cleanRecipe?.transformers?.filter((t) => t.transformer !== null);
+
   return (
-    <Popup on="click" wide="very" trigger={<Button secondary>YAML</Button>}>
-      <Popup.Content>
-        <xmp>{YAML.stringify(recipe)}</xmp>
-      </Popup.Content>
-    </Popup>
+    <ButtonGroup>
+      <Popup
+        on="click"
+        wide="very"
+        position="bottom left"
+        trigger={<Button secondary>JSON</Button>}
+      >
+        <Popup.Content>
+          <xmp>{JSON.stringify(cleanRecipe, null, 2)}</xmp>
+        </Popup.Content>
+      </Popup>
+      <Popup
+        on="click"
+        wide="very"
+        position="bottom left"
+        trigger={<Button secondary>YAML</Button>}
+      >
+        <Popup.Content>
+          <xmp>{YAML.stringify(cleanRecipe)}</xmp>
+        </Popup.Content>
+      </Popup>
+    </ButtonGroup>
   );
 };
 
