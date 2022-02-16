@@ -21,7 +21,7 @@ const google_takeout_browsing_history = {
 
 const google_takeout_youtube_history_json = {
   name: "Google Takeout Youtube History (json)",
-  file: "watch-history.json",
+  file: ["watch-history.json", "kijkgeschiedenis.json"],
   filetype: "json",
   rows_selector: "$.",
   columns: [
@@ -44,7 +44,7 @@ const google_takeout_youtube_history_json = {
 
 const google_takeout_youtube_history_html = {
   name: "Google Takeout Youtube History (html)",
-  file: "watch-history.html",
+  file: ["watch-history.html", "kijkgeschiedenis.html"],
   filetype: "html",
   rows_selector: ".mdl-grid > .outer-cell",
   columns: [

@@ -99,10 +99,11 @@ const Cookbook = () => {
     const fillData = async (meps, setData) => {
       const data = {};
       for (let mep of meps) {
-        const test = await mep.cook();
-        data[mep.recipe.name] = test;
+        const result = await mep.cook();
+        data[mep.recipe.name] = result.data;
       }
       setData(data);
+      console.log(data);
       setSelected(Object.keys(data)[0]);
       setLoading(false);
     };

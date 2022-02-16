@@ -11,11 +11,12 @@ function standardizeRecipe(recipe) {
   recipe.file = asArray(recipe.file) || [];
   recipe.filetype = recipe.filetype || "json";
   recipe.rows_selector = asArray(recipe.rows_selector) || [];
-  recipe.columns = asArray(recipe.columns) || [];
+  recipe.columns = recipe.columns || [];
 
   for (let i = 0; i < recipe.columns.length; i++) {
     recipe.columns[i].selector = asArray(recipe.columns[i].selector) || [];
   }
 
+  recipe.transformers = recipe.transformers || [];
   return recipe;
 }

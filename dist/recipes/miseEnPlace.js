@@ -1,5 +1,21 @@
-import parserPipeline from "../parsers/parserPipeline";
-import transformerPipeline from "../transformers/transformerPipeline";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+require("core-js/modules/web.dom-collections.iterator.js");
+
+require("core-js/modules/es.string.includes.js");
+
+require("core-js/modules/es.promise.js");
+
+var _parserPipeline = _interopRequireDefault(require("../parsers/parserPipeline"));
+
+var _transformerPipeline = _interopRequireDefault(require("../transformers/transformerPipeline"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Mise en place means to put everything in place, ready to start cooking.
@@ -14,14 +30,18 @@ import transformerPipeline from "../transformers/transformerPipeline";
  */
 const miseEnPlace = (cookbook, files) => {
   const meps = [];
+
   for (let recipe of cookbook.recipes) {
     let recipeFiles = [];
+
     for (let path of recipe.file) {
-      const matchedFiles = files.filter((f) => f.path.toLowerCase().includes(path.toLowerCase()));
+      const matchedFiles = files.filter(f => f.path.toLowerCase().includes(path.toLowerCase()));
       recipeFiles = [...recipeFiles, ...matchedFiles];
     }
+
     meps.push(new MEP(recipe, recipeFiles));
   }
+
   return meps;
 };
 
@@ -32,20 +52,32 @@ class MEP {
   }
 
   async cook() {
-    if (this.files.length === 0) return { data: [], status: "no files" };
+    if (this.files.length === 0) return {
+      data: [],
+      status: "no files"
+    };
 
     for (let file of this.files) {
       try {
         let data = await file.parse(this.recipe.filetype);
-        data = parserPipeline(data, this.recipe);
-        data = transformerPipeline(data, this.recipe);
-        return { data, status: "success" };
+        data = (0, _parserPipeline.default)(data, this.recipe);
+        data = (0, _transformerPipeline.default)(data, this.recipe);
+        return {
+          data,
+          status: "success"
+        };
       } catch (e) {
-        console.log(`Could not cook ${this.recipe.name} with ${file.name}`);
+        console.log("Could not cook ".concat(this.recipe.name, " with ").concat(file.name));
       }
     }
-    return { data: [], status: "failed" };
+
+    return {
+      data: [],
+      status: "failed"
+    };
   }
+
 }
 
-export default miseEnPlace;
+var _default = miseEnPlace;
+exports.default = _default;

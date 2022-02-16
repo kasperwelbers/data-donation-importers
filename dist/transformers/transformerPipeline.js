@@ -14,7 +14,6 @@ var _standardizeRecipe = _interopRequireDefault(require("../recipes/standardizeR
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function transformerPipeline(data, recipe) {
-  console.log("go");
   recipe = (0, _standardizeRecipe.default)(recipe);
   const transformers = recipe.transformers;
   if (!transformers) return data;
