@@ -1,5 +1,6 @@
 import parseHTML from "./parseHTML";
 import parseJSON from "./parseJSON";
+import parseCSV from "./parseCSV";
 import standardizeRecipe from "../recipes/standardizeRecipe";
 
 export default function parserPipeline(content, recipe, includeFull = false, head = false) {
@@ -37,6 +38,8 @@ export default function parserPipeline(content, recipe, includeFull = false, hea
         rows_selector_data = parseJSON(content.content, rows_selector, column_selectors, head);
       if (recipe.filetype === "html")
         rows_selector_data = parseHTML(content.content, rows_selector, column_selectors, head);
+      if (recipe.filetype === "csv")
+        rows_selector_data = parseCSV(content.content, rows_selector, column_selectors, head);
 
       for (let rawrow of rows_selector_data) {
         const row = {};

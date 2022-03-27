@@ -22,7 +22,7 @@ const new_recipe = {
   name: "New recipe",
   file: [],
   filetype: "json",
-  rows_selector: ["$."],
+  rows_selector: [""],
   columns: [],
 };
 
@@ -117,6 +117,17 @@ const RecipeForms = ({ recipe, setRecipe }) => {
 
   if (!recipe || !recipe.name || !recipe.filetype || !recipe.file) return null;
 
+  console.log(recipe);
+  const rowSelector = (
+    <Form.Field>
+      <label>
+        Rows selector{" "}
+        <span style={{ color: "grey", float: "right" }}>use multiple rows to add aliases</span>
+      </label>
+      <ListInputs values={recipe.rows_selector} setValues={setRowsSelector} />
+    </Form.Field>
+  );
+
   return (
     <>
       <Form.Field>
@@ -148,13 +159,7 @@ const RecipeForms = ({ recipe, setRecipe }) => {
       <Divider />
       <Header>Extract data</Header>
       <SelectorHelp filetype={recipe.filetype} />
-      <Form.Field>
-        <label>
-          Rows selector{" "}
-          <span style={{ color: "grey", float: "right" }}>use multiple rows to add aliases</span>
-        </label>
-        <ListInputs values={recipe.rows_selector} setValues={setRowsSelector} />
-      </Form.Field>
+      {recipe?.filetype === "csv" ? null : rowSelector}
       <CreateColumns recipe={recipe} setRecipe={setRecipe} />
 
       <Divider />

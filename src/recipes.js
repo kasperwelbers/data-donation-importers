@@ -21,7 +21,7 @@ const google_takeout_browsing_history = {
 
 const google_takeout_youtube_history_json = {
   name: "Google Takeout Youtube History (json)",
-  file: ["watch-history.json", "kijkgeschiedenis.json"],
+  file: ["watch-history.json", "kijkgeschiedenis.json", "Wiedergabeverlauf.json"],
   filetype: "json",
   rows_selector: "$.",
   columns: [
@@ -32,7 +32,6 @@ const google_takeout_youtube_history_json = {
     { name: "raw_date", selector: "time" },
   ],
   transformers: [
-    { column: "raw_date", transformer: "replace", arguments: { regex: "watched " } },
     {
       transformer: "str_to_date",
       column: "raw_date",
@@ -44,7 +43,7 @@ const google_takeout_youtube_history_json = {
 
 const google_takeout_youtube_history_html = {
   name: "Google Takeout Youtube History (html)",
-  file: ["watch-history.html", "kijkgeschiedenis.html"],
+  file: ["watch-history.html", "kijkgeschiedenis.html", "Wiedergabeverlauf.html"],
   filetype: "html",
   rows_selector: ".mdl-grid > .outer-cell",
   columns: [
@@ -52,21 +51,40 @@ const google_takeout_youtube_history_html = {
     { name: "title_url", selector: "a @href" },
     { name: "channel", selector: "a:nth-of-type(2)" },
     { name: "channel_url", selector: "a:nth-of-type(2) @href" },
-    { name: "raw_date", selector: ".content-cell @TEXT" },
+    { name: "raw_date", selector: ".content-cell @INNER" },
   ],
   transformers: [
-    { transformer: "replace", column: "raw_date", arguments: { regex: "watched " } },
+    { column: "raw_date", transformer: "replace", arguments: { regex: ".*<br>" } },
     {
       transformer: "str_to_date",
       column: "raw_date",
       new_column: "date",
-      arguments: { format: ["D MMM YYYY, hh:mm:ss"] },
+      arguments: {},
     },
   ],
+};
+
+const google_takeout_youtube_subscriptions = {
+  name: "Google Takeout Youtube Subscriptions",
+  file: ["subscriptions.csv", "abonnementen.csv"],
+  filetype: "csv",
+  rows_selector: [""],
+  columns: [
+    {
+      name: "channel_url",
+      selector: ["Channel URL", "Kanaal-URL"],
+    },
+    {
+      name: "channel",
+      selector: ["Channel title", "Kanaaltitel"],
+    },
+  ],
+  transformers: [],
 };
 
 export const recipes = {
   google_takeout_youtube_history_json,
   google_takeout_youtube_history_html,
   google_takeout_browsing_history,
+  google_takeout_youtube_subscriptions,
 };

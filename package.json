@@ -6,7 +6,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.1.6",
+  "version": "0.1.7",
   "homepage": "https://kasperwelbers.github.io/data-donation-importers",
   "repository": {
     "type": "git",
@@ -25,8 +25,10 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "any-date-parser": "^1.5.2",
     "axios": "^0.25.0",
-    "dayjs": "^1.10.7",
+    "dayjs": "^1.10.4",
+    "dayjs-parser": "^0.9.3",
     "json-to-pretty-yaml": "^1.2.2",
     "jsonpath-plus": "^6.0.1",
     "jszip": "^3.7.1",

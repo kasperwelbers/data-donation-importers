@@ -7,12 +7,20 @@ const SelectorHelp = ({ filetype }) => {
   let help = {};
   if (filetype === "json") help = jsonHelp();
   if (filetype === "html") help = htmlHelp();
+  if (filetype === "csv") help = csvHelp();
 
+  console.log(help);
   return (
     <Message style={{ position: "relativel" }}>
       <Button
         onClick={() => setDetails(!details)}
-        style={{ padding: "2px", position: "absolute", top: "2px", right: "0" }}
+        style={{
+          padding: "2px",
+          position: "absolute",
+          top: "2px",
+          right: "0",
+          visibility: help.details ? "visible" : "hidden",
+        }}
       >
         {details ? "hide details" : "show details"}
       </Button>
@@ -40,6 +48,12 @@ const jsonHelp = () => {
       <b>column selectors</b> you then select specific values in these array items.
     </>
   );
+  return { short, details };
+};
+
+const csvHelp = () => {
+  const short = <>For CSV files, you only need to provide the column names</>;
+  const details = null;
   return { short, details };
 };
 

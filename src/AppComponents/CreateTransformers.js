@@ -167,7 +167,7 @@ const TransformerArguments = React.memo(({ transformer, args, setArgs }) => {
               </label>
               <ArgInput
                 arg={arg}
-                value={args[arg.name] || arg.default}
+                value={args[arg.name] ?? arg.default}
                 setValue={(value) => setValue(arg.name, value)}
               />
             </Form.Field>

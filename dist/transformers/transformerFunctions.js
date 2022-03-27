@@ -23,13 +23,11 @@ var _dayjs = _interopRequireDefault(require("dayjs"));
 
 var _customParseFormat = _interopRequireDefault(require("dayjs/plugin/customParseFormat"));
 
+var _anyDateParser = _interopRequireDefault(require("any-date-parser"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import advancedFormat from "dayjs/plugin/advancedFormat";
-// import timezone from "dayjs/plugin/timezone";
-_dayjs.default.extend(_customParseFormat.default); // dayjs.extend(advancedFormat);
-// dayjs.extend(timezone);
-// add any transformer functions here.
+_dayjs.default.extend(_customParseFormat.default); // add any transformer functions here.
 // the transform function has as first argument the column on which the transformer is applied
 // The arguments array is then passed after that (based on order, so the argument name is for the user sees it
 // and does not need to match the actual argument in the transform function)
@@ -76,18 +74,31 @@ const int_to_date = {
 };
 const str_to_date = {
   label: "date from string",
-  description: "Transform a string to a date",
+  description: "Transform string to date",
   arguments: [{
     name: "format",
     type: "string_multiple",
     link: "https://day.js.org/docs/en/parse/string-format",
-    placeholder: "Specify how to parse date. Add rows for alternatives",
+    placeholder: "Add formats (one per line)",
     default: []
+  }, {
+    name: "auto parse",
+    type: "bool",
+    default: true
   }],
-  transform: (x, format) => {
+  transform: (x, format, auto_parse) => {
     const formats = [...format].filter(f => f !== "");
-    if (!formats || formats.length === 0) return (0, _dayjs.default)(x).toDate() || x;
-    return (0, _dayjs.default)(x, formats).toDate() || x;
+    let date;
+
+    if (!formats || formats.length === 0) {
+      date = (0, _dayjs.default)(x);
+    } else {
+      date = (0, _dayjs.default)(x, formats);
+    }
+
+    if (date.isValid()) return date.toDate();
+    if (auto_parse) date = _anyDateParser.default.fromString(x);
+    return date instanceof Date ? date : "invalid date: ".concat(x);
   }
 };
 const trim = {

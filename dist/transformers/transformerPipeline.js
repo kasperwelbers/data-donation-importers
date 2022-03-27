@@ -40,7 +40,9 @@ function transformerPipeline(data, recipe) {
 
 const getArgumentArray = (transformer, args) => {
   return _transformerFunctions.transformerFunctions[transformer].arguments.map(arg => {
-    let value = args[arg.name] || arg.default;
+    var _args$arg$name;
+
+    let value = (_args$arg$name = args[arg.name]) !== null && _args$arg$name !== void 0 ? _args$arg$name : arg.default;
     if (arg.type === "string_multiple" && !Array.isArray(value)) value = [value];
     return value;
   });
