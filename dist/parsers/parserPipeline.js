@@ -11,6 +11,8 @@ var _parseHTML = _interopRequireDefault(require("./parseHTML"));
 
 var _parseJSON = _interopRequireDefault(require("./parseJSON"));
 
+var _parseCSV = _interopRequireDefault(require("./parseCSV"));
+
 var _standardizeRecipe = _interopRequireDefault(require("../recipes/standardizeRecipe"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -50,6 +52,7 @@ function parserPipeline(content, recipe) {
       let rows_selector_data;
       if (recipe.filetype === "json") rows_selector_data = (0, _parseJSON.default)(content.content, rows_selector, column_selectors, head);
       if (recipe.filetype === "html") rows_selector_data = (0, _parseHTML.default)(content.content, rows_selector, column_selectors, head);
+      if (recipe.filetype === "csv") rows_selector_data = (0, _parseCSV.default)(content.content, rows_selector, column_selectors, head);
 
       for (let rawrow of rows_selector_data) {
         const row = {};
