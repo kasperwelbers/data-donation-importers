@@ -2,7 +2,7 @@ export default function parseHTML(content, rows_selector, column_selectors, head
   if (column_selectors.length === 0) return [];
 
   let elements = Array.from(content.querySelectorAll(rows_selector));
-  if (head) elements = elements.slice(0, 5);
+  if (head) elements = elements.slice(0, 50);
 
   if (!elements || elements.length === 0) return [];
   let data = elements.map((el) => {

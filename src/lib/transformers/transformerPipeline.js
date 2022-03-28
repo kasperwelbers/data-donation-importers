@@ -6,23 +6,49 @@ export default function transformerPipeline(data, recipe) {
 
   const transformers = recipe.transformers;
   if (!transformers) return data;
+  if (!data) return data;
+
+  const remove = new Array(data.length).fill(false);
 
   for (let transformer of transformers) {
     try {
-      if (!transformer.column || !transformer.transformer) continue;
-      const transformFunction = transformerFunctions[transformer.transformer].transform;
+      if (!transformer.transformer) continue;
+      const transformFunction = transformerFunctions[transformer.transformer];
+      if (transformFunction.input === "column" && !transformer.column) continue;
+
       const argArray = getArgumentArray(transformer.transformer, transformer.arguments);
       for (let i = 0; i < data.length; i++) {
-        const input = data[i][transformer.column];
-        if (input == null) continue;
-        const toColumn = transformer.new_column || transformer.column;
-        data[i][toColumn] = transformFunction(...[input, ...argArray]);
+        let input = data[i];
+        if (transformFunction.input === "column") input = input[transformer.column];
+
+        if (transformFunction.action === "mutate") {
+          const toColumn =
+            transformer.new_column || transformer.column || `${transformer.transformer} OUTPUT`;
+          try {
+            data[i][toColumn] = transformFunction.func(...[input, ...argArray]);
+          } catch (e) {
+            console.log(e);
+            data[i][toColumn] = null;
+          }
+        }
+        if (transformFunction.action === "filter") {
+          try {
+            const filter = transformFunction.func(...[input, ...argArray]);
+            remove[i] = remove[i] || !filter;
+          } catch (e) {
+            console.log(e);
+          }
+        }
       }
     } catch (e) {
       console.log(e);
     }
   }
-  return data;
+
+  return remove.reduce((output, rm, index) => {
+    if (!rm) output.push(data[index]);
+    return output;
+  }, []);
 }
 
 const getArgumentArray = (transformer, args) => {

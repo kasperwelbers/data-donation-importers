@@ -12,12 +12,17 @@ export default function FullDataTable({ fullData, pagesize = 5 }) {
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
   const [columns, setColumns] = useState(null);
+  const [page, setPage] = useState(1);
 
-  const pageChange = (activePage) => {
-    const offset = (activePage - 1) * pagesize;
+  useEffect(() => {
+    if (!fullData || fullData.length === 0) {
+      setData([]);
+      return;
+    }
+    const offset = (page - 1) * pagesize;
     const newdata = fullData.slice(offset, offset + pagesize);
     setData(newdata);
-  };
+  }, [fullData, pagesize, page]);
 
   useEffect(() => {
     if (!fullData) {
@@ -28,9 +33,6 @@ export default function FullDataTable({ fullData, pagesize = 5 }) {
 
     const n = fullData.length;
     setPages(Math.ceil(n / pagesize));
-    let newdata = [];
-    if (n > 0) newdata = fullData.slice(0, pagesize);
-    setData(newdata);
 
     // get all columns used in data, so that table shows them if missing in a batch
     const columnMap = {};
@@ -40,11 +42,14 @@ export default function FullDataTable({ fullData, pagesize = 5 }) {
       }
     }
     setColumns(Object.keys(columnMap));
+    setPage(1);
   }, [fullData, pagesize]);
 
   if (!data || data.length === 0 || !columns || columns.length === 0) return null;
 
-  return <PaginationTable data={data} pages={pages} columns={columns} pageChange={pageChange} />;
+  return (
+    <PaginationTable data={data} pages={pages} columns={columns} page={page} setPage={setPage} />
+  );
 }
 
 /**
@@ -54,7 +59,7 @@ export default function FullDataTable({ fullData, pagesize = 5 }) {
  * @param {int} pages the number of pages
  * @returns
  */
-const PaginationTable = ({ data, columns, pages, pageChange }) => {
+const PaginationTable = ({ data, columns, pages, page, setPage }) => {
   const [singleLine, setSingleLine] = useState(true);
 
   const createHeaderRow = (data, columns) => {
@@ -121,6 +126,7 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
               {pages > 1 ? (
                 <Pagination
                   size="mini"
+                  activePage={page}
                   floated="right"
                   boundaryRange={1}
                   siblingRange={1}
@@ -143,9 +149,8 @@ const PaginationTable = ({ data, columns, pages, pageChange }) => {
                   }}
                   pointing
                   secondary
-                  defaultActivePage={1}
                   totalPages={pages}
-                  onPageChange={(e, d) => pageChange(d.activePage)}
+                  onPageChange={(e, d) => setPage(d.activePage)}
                 ></Pagination>
               ) : null}
             </Table.HeaderCell>

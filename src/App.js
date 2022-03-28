@@ -116,14 +116,11 @@ const Cookbook = () => {
         <Grid.Row>
           <CookbookSelector setCookbook={setCookbook} />
         </Grid.Row>
-      </Grid.Column>
-      <Grid.Column width={11} style={{ overflow: "auto", height: "100vh" }}>
-        <Segment style={{ display: "flex", flexDirection: "column" }}>
-          <Dimmer active={loading}>
-            <Loader />
-          </Dimmer>
-          <DropZone allowedFiles={cookbook?.files} setAcceptedFiles={setAcceptedFiles} devmode />
-          <Menu vertical>
+        <Grid.Row>
+          <Menu vertical style={{ float: "right", marginTop: "10px" }}>
+            <Dimmer active={loading}>
+              <Loader />
+            </Dimmer>
             {Object.keys(data).map((key) => {
               const n = data[key] ? data[key].length : 0;
               return (
@@ -133,6 +130,15 @@ const Cookbook = () => {
               );
             })}
           </Menu>
+        </Grid.Row>
+      </Grid.Column>
+      <Grid.Column width={11} style={{ overflow: "auto", height: "100vh" }}>
+        <Segment style={{ display: "flex", flexDirection: "column" }}>
+          <Dimmer active={loading}>
+            <Loader />
+          </Dimmer>
+          <DropZone allowedFiles={cookbook?.files} setAcceptedFiles={setAcceptedFiles} devmode />
+          <br />
           <FullDataTable fullData={data[selected]} pagesize={10} />
         </Segment>
       </Grid.Column>

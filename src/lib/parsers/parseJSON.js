@@ -6,8 +6,8 @@ export default function parseJSON(content, rows_selector, column_selectors, head
 
   // JSONPATH: https://goessner.net/articles/JsonPath/
   const wrap = false;
-  let objects = JSONPath({ path: rows_selector || "", json: content, wrap });
-  if (head) objects = objects.slice(0, 5);
+  let objects = JSONPath({ path: rows_selector || "$.", json: content, wrap });
+  if (head) objects = objects.slice(0, 50);
   if (!objects) return [];
   let data = objects.map((json) => {
     const row = {};

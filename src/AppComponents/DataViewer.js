@@ -101,7 +101,7 @@ const RenderProcessed = ({ content, recipe }) => {
           <Checkbox
             checked={head}
             toggle
-            label="only show first 5"
+            label="only process first 50 (be carefull when testing filters)"
             onChange={(e, d) => setHead(d.checked)}
             style={{ transform: "scale(0.7)" }}
           />

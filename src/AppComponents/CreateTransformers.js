@@ -38,17 +38,7 @@ const CreateTransformers = ({ recipe, setRecipe }) => {
 
   return (
     <Grid style={{ paddingBottom: "30px" }}>
-      <Grid.Row style={{ paddingBottom: "0" }}>
-        <Grid.Column width={TRANSFORMERWIDTH}>
-          <b>Transformer</b>
-        </Grid.Column>
-        <Grid.Column width={COLUMNWIDTH}>
-          <b>Column</b>
-        </Grid.Column>
-        <Grid.Column width={NEWCOLUMNWIDTH}>
-          <b>New Column</b>
-        </Grid.Column>
-      </Grid.Row>
+      <Grid.Row style={{ paddingBottom: "0" }}></Grid.Row>
       {recipe.transformers.map((transformer, i) => (
         <Transformer
           key={"transformer" + i}
@@ -91,10 +81,37 @@ const Transformer = ({ i, transformers, setTransformers }) => {
     setTransformers([...transformers]);
   };
 
+  const inputColumn = (
+    <>
+      <b>Input column</b>
+      <Input
+        fluid
+        placeholder="column"
+        value={transformers[i].column || ""}
+        onChange={(e, d) => setColumn(d.value)}
+      />
+    </>
+  );
+
+  const outputColumn = (
+    <>
+      <b>Output column</b>
+      <Input
+        fluid
+        placeholder="new column"
+        value={transformers[i].new_column || ""}
+        onChange={(e, d) => setNewColumn(d.value)}
+      />
+    </>
+  );
+
+  const tf = transformerFunctions[transformers[i].transformer];
+
   return (
     <>
       <Grid.Row style={{ padding: "1px 0" }}>
         <Grid.Column width={TRANSFORMERWIDTH}>
+          <b>Transformer</b>
           <Dropdown
             fluid
             selection
@@ -107,21 +124,10 @@ const Transformer = ({ i, transformers, setTransformers }) => {
           />
         </Grid.Column>
         <Grid.Column width={COLUMNWIDTH} style={{ paddingLeft: "0" }}>
-          <Input
-            fluid
-            placeholder="column"
-            value={transformers[i].column || ""}
-            onChange={(e, d) => setColumn(d.value)}
-          />
+          {tf?.input === "column" ? inputColumn : null}
         </Grid.Column>
-
         <Grid.Column width={NEWCOLUMNWIDTH} style={{ paddingLeft: "0" }}>
-          <Input
-            fluid
-            placeholder="optional"
-            value={transformers[i].new_column || ""}
-            onChange={(e, d) => setNewColumn(d.value)}
-          />
+          {tf?.action === "mutate" ? outputColumn : null}
         </Grid.Column>
       </Grid.Row>
       <TransformerArguments

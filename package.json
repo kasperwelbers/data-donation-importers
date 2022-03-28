@@ -29,6 +29,7 @@
     "axios": "^0.25.0",
     "dayjs": "^1.10.4",
     "dayjs-parser": "^0.9.3",
+    "filtrex": "^2.2.3",
     "json-to-pretty-yaml": "^1.2.2",
     "jsonpath-plus": "^6.0.1",
     "jszip": "^3.7.1",
