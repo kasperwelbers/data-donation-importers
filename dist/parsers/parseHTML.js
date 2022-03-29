@@ -17,7 +17,7 @@ function parseHTML(content, rows_selector, column_selectors) {
   let head = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
   if (column_selectors.length === 0) return [];
   let elements = Array.from(content.querySelectorAll(rows_selector));
-  if (head) elements = elements.slice(0, 5);
+  if (head) elements = elements.slice(0, 50);
   if (!elements || elements.length === 0) return [];
   let data = elements.map(el => {
     const row = {};

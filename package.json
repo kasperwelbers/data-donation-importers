@@ -6,7 +6,7 @@
     "react",
     "annotation"
   ],
-  "version": "0.1.8",
+  "version": "0.1.9",
   "homepage": "https://kasperwelbers.github.io/data-donation-importers",
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "papaparse": "^5.3.1",
     "react": "^17.0.1",
     "react-cookie": "^4.1.1",
-    "react-dom": "^17.0.1",
+    "react-dom": "^17.0.2",
     "react-dropzone": "^12.0.1",
     "react-inspector": "^5.1.1",
     "react-json-view": "^1.21.3",

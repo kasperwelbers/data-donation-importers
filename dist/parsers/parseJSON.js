@@ -18,11 +18,11 @@ function parseJSON(content, rows_selector, column_selectors) {
 
   const wrap = false;
   let objects = (0, _jsonpathPlus.JSONPath)({
-    path: rows_selector || "",
+    path: rows_selector || "$.",
     json: content,
     wrap
   });
-  if (head) objects = objects.slice(0, 5);
+  if (head) objects = objects.slice(0, 50);
   if (!objects) return [];
   let data = objects.map(json => {
     const row = {};

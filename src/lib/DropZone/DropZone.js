@@ -30,23 +30,26 @@ const rejectStyle = {};
  *
  * @param {Array} allowedFiles An array with filenames. Only uploaded filenames that 'include' these names are accepted
  * @param {Function} setAcceptedFiles Callback for setting the acceptedFiles state. This is an array of File class instances.
+ * @param {string} label A string or jsx to show as label
+ * @param {Object} style An object with CCS style
  *
  * @param {bool} devmode  If TRUE, files that don't match allowedFiles are not blocked, but filtered afterwards. This is only
  *                        used for developing recipes (it lets us updated acceptedFiles without having to re-upload data)
  * @returns
  */
-export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
+export default function DropZone({ allowedFiles, setAcceptedFiles, label, style, devmode }) {
   const { getRootProps, getInputProps, acceptedFiles, isFocused, isDragAccept, isDragReject } =
     useDropzone(createValidator(allowedFiles));
 
-  const style = useMemo(
+  const styleObj = useMemo(
     () => ({
       ...baseStyle,
       ...(isFocused ? focusedStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {}),
+      ...style,
     }),
-    [isFocused, isDragAccept, isDragReject]
+    [isFocused, isDragAccept, isDragReject, style]
   );
 
   useEffect(() => {
@@ -54,9 +57,9 @@ export default function DropZone({ allowedFiles, setAcceptedFiles, devmode }) {
   }, [acceptedFiles, setAcceptedFiles, allowedFiles, devmode]);
 
   return (
-    <div {...getRootProps({ style })}>
+    <div {...getRootProps({ style: styleObj })}>
       <input {...getInputProps()} />
-      <p>Drag a file or folder into this area, or click here to select a file</p>
+      <p>{label || "Drag a file or folder into this area, or click here to select a file"}</p>
     </div>
   );
 }
