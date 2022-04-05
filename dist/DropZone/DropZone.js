@@ -62,6 +62,8 @@ const rejectStyle = {};
  *
  * @param {Array} allowedFiles An array with filenames. Only uploaded filenames that 'include' these names are accepted
  * @param {Function} setAcceptedFiles Callback for setting the acceptedFiles state. This is an array of File class instances.
+ * @param {string} label A string or jsx to show as label
+ * @param {Object} style An object with CCS style
  *
  * @param {bool} devmode  If TRUE, files that don't match allowedFiles are not blocked, but filtered afterwards. This is only
  *                        used for developing recipes (it lets us updated acceptedFiles without having to re-upload data)
@@ -72,6 +74,8 @@ function DropZone(_ref) {
   let {
     allowedFiles,
     setAcceptedFiles,
+    label,
+    style,
     devmode
   } = _ref;
   const {
@@ -82,13 +86,13 @@ function DropZone(_ref) {
     isDragAccept,
     isDragReject
   } = (0, _reactDropzone.useDropzone)(createValidator(allowedFiles));
-  const style = (0, _react.useMemo)(() => _objectSpread(_objectSpread(_objectSpread(_objectSpread({}, baseStyle), isFocused ? focusedStyle : {}), isDragAccept ? acceptStyle : {}), isDragReject ? rejectStyle : {}), [isFocused, isDragAccept, isDragReject]);
+  const styleObj = (0, _react.useMemo)(() => _objectSpread(_objectSpread(_objectSpread(_objectSpread(_objectSpread({}, baseStyle), isFocused ? focusedStyle : {}), isDragAccept ? acceptStyle : {}), isDragReject ? rejectStyle : {}), style), [isFocused, isDragAccept, isDragReject, style]);
   (0, _react.useEffect)(() => {
     listFiles(acceptedFiles, setAcceptedFiles, allowedFiles, devmode);
   }, [acceptedFiles, setAcceptedFiles, allowedFiles, devmode]);
   return /*#__PURE__*/_react.default.createElement("div", getRootProps({
-    style
-  }), /*#__PURE__*/_react.default.createElement("input", getInputProps()), /*#__PURE__*/_react.default.createElement("p", null, "Drag a file or folder into this area, or click here to select a file"));
+    style: styleObj
+  }), /*#__PURE__*/_react.default.createElement("input", getInputProps()), /*#__PURE__*/_react.default.createElement("p", null, label || "Drag a file or folder into this area, or click here to select a file"));
 }
 
 const listFiles = async (acceptedFiles, setAcceptedFiles, allowedFiles, devmode) => {
