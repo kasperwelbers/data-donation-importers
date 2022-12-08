@@ -9,6 +9,7 @@ import {
   Button,
   Popup,
   ButtonGroup,
+  Checkbox,
 } from "semantic-ui-react";
 import RecipeSelector from "./RecipeSelector";
 import { recipes } from "../recipes.js";
@@ -117,7 +118,6 @@ const RecipeForms = ({ recipe, setRecipe }) => {
 
   if (!recipe || !recipe.name || !recipe.filetype || !recipe.file) return null;
 
-  console.log(recipe);
   const rowSelector = (
     <Form.Field>
       <label>
@@ -162,6 +162,12 @@ const RecipeForms = ({ recipe, setRecipe }) => {
       {recipe?.filetype === "csv" ? null : rowSelector}
       <CreateColumns recipe={recipe} setRecipe={setRecipe} />
 
+      <Checkbox
+        onChange={(e, d) => {
+          setRecipe((recipe) => ({ ...recipe, include_row_dump: d.checked }));
+        }}
+        label="Include column with dump of all row data"
+      />
       <Divider />
       <Header>Transform columns</Header>
       <CreateTransformers recipe={recipe} setRecipe={setRecipe} />

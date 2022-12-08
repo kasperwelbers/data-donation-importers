@@ -31,7 +31,8 @@ function parseJSON(content, rows_selector, column_selectors) {
       if (column_selector === "FULL_ROW_OBJECT") {
         row[column_selector] = JSON.stringify(json, null, 2);
         continue;
-      }
+      } // const value =
+
 
       row[column_selector] = (0, _jsonpathPlus.JSONPath)({
         path: column_selector,

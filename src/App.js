@@ -103,7 +103,6 @@ const Cookbook = () => {
         data[mep.recipe.name] = result.data;
       }
       setData(data);
-      console.log(data);
       setSelected(Object.keys(data)[0]);
       setLoading(false);
     };

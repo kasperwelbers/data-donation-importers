@@ -86,7 +86,7 @@ const RenderProcessed = ({ content, recipe }) => {
   const [head, setHead] = useState(true);
 
   useEffect(() => {
-    let data = parserPipeline(content, recipe, false, head);
+    let data = parserPipeline(content, recipe, recipe.include_row_dump, head);
     data = transformerPipeline(data, recipe);
     setData(data);
   }, [content, recipe, head, setData]);

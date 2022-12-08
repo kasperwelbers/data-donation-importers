@@ -9,7 +9,6 @@ const SelectorHelp = ({ filetype }) => {
   if (filetype === "html") help = htmlHelp();
   if (filetype === "csv") help = csvHelp();
 
-  console.log(help);
   return (
     <Message style={{ position: "relativel" }}>
       <Button

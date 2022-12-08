@@ -9,6 +9,7 @@ export default function parseJSON(content, rows_selector, column_selectors, head
   let objects = JSONPath({ path: rows_selector || "$.", json: content, wrap });
   if (head) objects = objects.slice(0, 50);
   if (!objects) return [];
+
   let data = objects.map((json) => {
     const row = {};
     for (let column_selector of column_selectors) {
@@ -16,6 +17,7 @@ export default function parseJSON(content, rows_selector, column_selectors, head
         row[column_selector] = JSON.stringify(json, null, 2);
         continue;
       }
+      // const value =
       row[column_selector] = JSONPath({ path: column_selector, json, wrap });
     }
     return row;
