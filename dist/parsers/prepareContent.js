@@ -4,13 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
 require("core-js/modules/es.promise.js");
-
 var _papaparse = _interopRequireDefault(require("papaparse"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 const prepareContent = async (file, filetype, setContent) => {
   setContent({
     content: null,
@@ -19,7 +15,6 @@ const prepareContent = async (file, filetype, setContent) => {
     message: ""
   });
   let content = null;
-
   try {
     const text = await file.read();
     if (filetype === "json") content = JSON.parse(text);
@@ -30,7 +25,6 @@ const prepareContent = async (file, filetype, setContent) => {
   } catch (e) {
     console.log(e);
   }
-
   if (content === null) {
     setContent({
       content,
@@ -47,6 +41,5 @@ const prepareContent = async (file, filetype, setContent) => {
     });
   }
 };
-
 var _default = prepareContent;
 exports.default = _default;

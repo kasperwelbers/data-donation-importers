@@ -4,19 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-
 require("core-js/modules/web.dom-collections.iterator.js");
-
+require("core-js/modules/es.array.includes.js");
 require("core-js/modules/es.string.includes.js");
-
 require("core-js/modules/es.promise.js");
-
 var _parserPipeline = _interopRequireDefault(require("../parsers/parserPipeline"));
-
 var _transformerPipeline = _interopRequireDefault(require("../transformers/transformerPipeline"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /**
  * Mise en place means to put everything in place, ready to start cooking.
  * Given a cookbook and a list of accepted files (from the dropzone),
@@ -30,33 +24,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 const miseEnPlace = (cookbook, files) => {
   const meps = [];
-
   for (let recipe of cookbook.recipes) {
     let recipeFiles = [];
-
     for (let path of recipe.file) {
       const matchedFiles = files.filter(f => f.path.toLowerCase().includes(path.toLowerCase()));
       recipeFiles = [...recipeFiles, ...matchedFiles];
     }
-
     meps.push(new MEP(recipe, recipeFiles));
   }
-
   return meps;
 };
-
 class MEP {
   constructor(recipe, files) {
     this.recipe = recipe;
     this.files = files;
   }
-
   async cook() {
     if (this.files.length === 0) return {
       data: [],
       status: "no files"
     };
-
     for (let file of this.files) {
       try {
         let data = await file.parse(this.recipe.filetype);
@@ -70,14 +57,11 @@ class MEP {
         console.log("Could not cook ".concat(this.recipe.name, " with ").concat(file.name));
       }
     }
-
     return {
       data: [],
       status: "failed"
     };
   }
-
 }
-
 var _default = miseEnPlace;
 exports.default = _default;

@@ -164,7 +164,7 @@ const RecipeForms = ({ recipe, setRecipe }) => {
 
       <Checkbox
         onChange={(e, d) => {
-          setRecipe((recipe) => ({ ...recipe, include_row_dump: d.checked }));
+          setRecipe((recipe) => ({ ...recipe, raw_row_data: d.checked }));
         }}
         label="Include column with dump of all row data"
       />

@@ -3,7 +3,7 @@ import parseJSON from "./parseJSON";
 import parseCSV from "./parseCSV";
 import standardizeRecipe from "../recipes/standardizeRecipe";
 
-export default function parserPipeline(content, recipe, includeFull = false, head = false) {
+export default function parserPipeline(content, recipe, head = false) {
   recipe = standardizeRecipe(recipe);
   let data = [];
   if (!recipe?.columns) return [];
@@ -22,9 +22,9 @@ export default function parserPipeline(content, recipe, includeFull = false, hea
     }
   }
 
-  if (includeFull) {
+  if (recipe.raw_row_data) {
     column_selectors.push("FULL_ROW_OBJECT");
-    column_names["FULL_ROW_OBJECT"] = ["_ROW_DATA"];
+    column_names["FULL_ROW_OBJECT"] = ["_RAW_DATA"];
   }
 
   try {

@@ -21,11 +21,7 @@ Object.defineProperty(exports, "miseEnPlace", {
     return _miseEnPlace.default;
   }
 });
-
 var _DropZone = _interopRequireDefault(require("./DropZone/DropZone"));
-
 var _miseEnPlace = _interopRequireDefault(require("./recipes/miseEnPlace"));
-
 var _createCookbook = _interopRequireDefault(require("./recipes/createCookbook"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }

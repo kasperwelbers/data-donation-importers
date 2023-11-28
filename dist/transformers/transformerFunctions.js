@@ -4,53 +4,41 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.transformerFunctions = void 0;
-
 require("core-js/modules/es.regexp.constructor.js");
-
 require("core-js/modules/es.regexp.exec.js");
-
 require("core-js/modules/es.regexp.to-string.js");
-
 require("core-js/modules/es.string.replace.js");
-
 require("core-js/modules/esnext.string.replace-all.js");
-
 require("core-js/modules/web.dom-collections.iterator.js");
-
 require("core-js/modules/es.string.trim.js");
-
 require("core-js/modules/web.url.js");
-
 require("core-js/modules/web.url-search-params.js");
-
 require("core-js/modules/es.regexp.test.js");
-
 var _dayjs = _interopRequireDefault(require("dayjs"));
-
 var _customParseFormat = _interopRequireDefault(require("dayjs/plugin/customParseFormat"));
-
 var _tokenize = _interopRequireDefault(require("./functions/tokenize"));
-
 var _filtrex = require("filtrex");
-
 var _anyDateParser = _interopRequireDefault(require("any-date-parser"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+_dayjs.default.extend(_customParseFormat.default);
 
-_dayjs.default.extend(_customParseFormat.default); // add any transformer functions here.
+// add any transformer functions here.
 // the transform function has as first argument the column on which the transformer is applied
 // The arguments array is then passed after that (based on order, so the argument name is for the user sees it
 // and does not need to match the actual argument in the transform function)
+
 // argument types are currently either string, number, bool or option (in which case also an options array needs to be given)
 // Add more types in the ArgInput componnent in CreatTransformers.js
+
 // link can be added to an argument to show a link in the recipe menu (e.g., for documentation)
+
 // input can be
 // - column: user needs to specify a specific input column
 // - row: x will be an entire row (an object)
+
 // action can be
 // - mutate: the input value will be mutated and assigned to the input column or specified output column
 // - filter: the return value must be a bool, and if false the row will be skipped
-
 
 const replace = {
   label: "replace",
@@ -111,13 +99,11 @@ const str_to_date = {
   func: (x, format, auto_parse) => {
     const formats = [...format].filter(f => f !== "");
     let date;
-
     if (!formats || formats.length === 0) {
       date = (0, _dayjs.default)(x);
     } else {
       date = (0, _dayjs.default)(x, formats);
     }
-
     if (date.isValid()) return date.toDate();
     if (auto_parse) date = _anyDateParser.default.fromString(x);
     return date instanceof Date ? date : "".concat(x, " (raw)");
@@ -145,19 +131,16 @@ const url_to_domain = {
   }],
   func: (x, rm_prefix) => {
     let domain;
-
     try {
       const url = new URL(x);
       domain = url.hostname;
     } catch (_) {
       domain = x;
     }
-
     if (rm_prefix) {
       domain = domain.replace(/www[0-9]*\./, "");
       domain = domain.replace(/^m\./, "");
     }
-
     return domain.trim();
   }
 };
