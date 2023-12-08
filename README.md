@@ -1,16 +1,16 @@
 # Data Donation Importers
 
-This repository contains an NPM module for extracting data from Data Download Packages (DDP) ([https://www.aup-online.com/content/journals/10.5117/CCR2022.2.001.ARAU](See Araujo et al.)).
+This repository contains an NPM module for extracting data from Data Download Packages (DDP) ([See Araujo et al.](https://www.aup-online.com/content/journals/10.5117/CCR2022.2.001.ARAU)).
 It provides a standardized approach for writing _recipes_ for extracting data from CSV, JSON and HTML files, with support for DDPs in multiple languages.
 For the majority of DDPs this standardized approach is sufficiently flexible.
 
 Please note that this module is still experimental, and primarily designed for use within our research team.
-It is currently being used and tested in the (https://github.com/ccs-amsterdam/DigitalFootprintsLab)[DigitalFootprintsLab] application.
+It is currently being used and tested in the [DigitalFootprintsLab](https://github.com/ccs-amsterdam/DigitalFootprintsLab) application.
 As it has now been successfully used in several studies, the future goal is to properly clean it up and offer it as a modular component that can be used in other data donation applications.
 
 # Demo
 
-A demo version can be found [https://kasperwelbers.github.io/data-donation-importers](here).
+A demo version can be found [here](https://kasperwelbers.github.io/data-donation-importers).
 You can upload a file, folder or zip file, and create an extraction 'recipe'.
 If the zip file is a Google Takeout package, you can also select one of the example recipes.
 
